@@ -13,8 +13,6 @@ import Head from 'next/head'
 import Header from '../../components/Header'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log('prefetching')
-
   const name = context.query.name as string
   const ssg = createSSGHelpers({
     router: appRouter,
@@ -119,9 +117,9 @@ const StationPage: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <div>
+      <main>
         <div className='flex items-center justify-between my-8 mx-4'>
-          <h1 className='text-center text-5xl'>{name}</h1>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl'>{name}</h1>
           <FavoriteToggle stationName={name} isFavorite={station?.isFavorite} />
         </div>
         <div className='flex flex-wrap justify-center m-2'>
@@ -131,7 +129,7 @@ const StationPage: NextPage = () => {
             <MonitorComponent key={index} monitor={monitor} />
           ))}
         </div>
-      </div>
+      </main>
     </>
   )
 }

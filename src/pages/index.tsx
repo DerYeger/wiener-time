@@ -8,6 +8,7 @@ import { appRouter } from '../server/trpc/router'
 import superjson from 'superjson'
 import FavoriteToggle from '../components/FavoriteToggle'
 import Header from '../components/Header'
+import { useSession } from 'next-auth/react'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssg = createSSGHelpers({
@@ -55,6 +56,7 @@ const Stations: FC<{
 }
 
 const Home: NextPage = () => {
+  const session = useSession()
   const { data: stations } = trpc.proxy.station.getAll.useQuery()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const filteredStations = useMemo(() => {
@@ -78,10 +80,12 @@ const Home: NextPage = () => {
       </Head>
       <Header />
       <main className='container flex flex-col items-center min-h-screen px-4 my-4 mx-auto gap-8'>
-        <div className='w-full max-w-md'>
-          <h1 className='text-2xl font-bold mb-4'>Favorites</h1>
-          <Stations stations={stations} onlyFavorites />
-        </div>
+        {session.data && (
+          <div className='w-full max-w-md'>
+            <h1 className='text-2xl font-bold mb-4'>Favorites</h1>
+            <Stations stations={stations} onlyFavorites />
+          </div>
+        )}
         <div className='w-full max-w-md'>
           <div className='flex gap-2 justify-between items-center  mb-4'>
             <h1 className='text-2xl font-bold'>All</h1>
