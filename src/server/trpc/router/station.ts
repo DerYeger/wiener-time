@@ -10,7 +10,7 @@ export const stationRouter = t.router({
       return Object.entries(raw).map(([name, stops]) => ({
         name,
         stops,
-        isFavorite: false,
+        isFavorite: undefined,
       }))
     }
     const favorites = new Set(

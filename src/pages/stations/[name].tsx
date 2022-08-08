@@ -1,6 +1,8 @@
+import { Icon } from '@iconify/react'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { FC } from 'react'
+import FavoriteToggle from '../../components/FavoriteToggle'
 import Spinner from '../../components/Spinner'
 import { Departure, Line, Monitor } from '../../model'
 import { trpc } from '../../utils/trpc'
@@ -21,7 +23,7 @@ const DepartureListItem: FC<{ departure: Departure }> = ({ departure }) => {
     )
 
   return (
-    <div>
+    <div className='flex justify-between items-center h-[40px]'>
       <div className='flex flex-col'>
         {departureTime}
         {delay !== 0 && (
@@ -33,9 +35,7 @@ const DepartureListItem: FC<{ departure: Departure }> = ({ departure }) => {
           </span>
         )}
       </div>
-      {/* {departure.vehicle?.barrierFree && (
-        <Icon name='wheelchair' type='font-awesome' size={16} />
-      )} */}
+      {departure.vehicle?.barrierFree && <Icon icon='fa:wheelchair' />}
     </div>
   )
 }
@@ -73,18 +73,21 @@ const MonitorComponent: FC<{ monitor: Monitor }> = ({ monitor }) => {
 
 const StationPage: NextPage = () => {
   const router = useRouter()
-  const { name } = router.query
-  const { data: stops } = trpc.proxy.station.getByStationName.useQuery(
-    name as string
-  )
+  const name = router.query.name as string
+  // TODO: Also sent fav data
+  const { data: stops } = trpc.proxy.station.getByStationName.useQuery(name)
   const { data: monitors } = trpc.proxy.monitor.getByStopIds.useQuery(
     stops?.map((stop) => stop.StopID) ?? [],
     { refetchInterval: 30 * 1000 }
   )
   return (
     <div>
-      <h1 className='text-center m-2 text-5xl'>{name}</h1>
-      <div className='flex flex-wrap m-2'>
+      <div className='flex items-center justify-between my-8 mx-4'>
+        <h1 className='text-center text-5xl'>{name}</h1>
+        <FavoriteToggle stationName={name} isFavorite={false} />
+      </div>
+
+      <div className='flex flex-wrap justify-center m-2'>
         {!monitors && <Spinner />}
         {monitors?.length === 0 && <span>No data</span>}
         {monitors?.map((monitor, index) => (

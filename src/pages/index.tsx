@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { appRouter } from '../server/trpc/router'
 import superjson from 'superjson'
 import { StaticStopData } from '../model'
+import FavoriteToggle from '../components/FavoriteToggle'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssg = createSSGHelpers({
@@ -26,44 +27,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 const Station: FC<{
-  station: { name: string; stops: StaticStopData[]; isFavorite: boolean }
+  station: { name: string; stops: StaticStopData[]; isFavorite?: boolean }
 }> = ({ station }) => {
-  const utils = trpc.useContext()
-  const addFavorite = trpc.proxy.station.addFavorite.useMutation({
-    onSuccess() {
-      utils.invalidateQueries('station.getAll')
-    },
-  })
-  const removeFavorite = trpc.proxy.station.removeFavorite.useMutation({
-    onSuccess() {
-      utils.invalidateQueries('station.getAll')
-    },
-  })
   return (
     <div className='flex gap-2 items-center'>
       <Link href={`/stations/${station.name}`}>{station.name}</Link>
-      {!station.isFavorite && (
-        <button
-          onClick={() => addFavorite.mutate(station.name)}
-          className='bg-blue-500 rounded px-4 py-2 text-white'
-        >
-          Fav
-        </button>
-      )}
-      {station.isFavorite && (
-        <button
-          onClick={() => removeFavorite.mutate(station.name)}
-          className='bg-red-500 rounded px-4 py-2 text-white'
-        >
-          Unfav
-        </button>
+      {station.isFavorite !== undefined && (
+        <FavoriteToggle
+          stationName={station.name}
+          isFavorite={station.isFavorite}
+        />
       )}
     </div>
   )
 }
 
 const Stations: FC<{
-  stations: { name: string; stops: StaticStopData[]; isFavorite: boolean }[]
+  stations: { name: string; stops: StaticStopData[]; isFavorite?: boolean }[]
   onlyFavorites?: boolean
 }> = ({ stations, onlyFavorites = false }) => {
   return (
