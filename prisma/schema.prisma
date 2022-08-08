@@ -3,15 +3,17 @@
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-    provider = "postgresql"
+    provider = "mysql"
     // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
 }
 
 model Favorite {
@@ -19,6 +21,7 @@ model Favorite {
     name String
     userId String
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    @@unique([name, userId])
 }
 
 // Necessary for Next auth

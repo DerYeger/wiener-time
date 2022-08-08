@@ -9,6 +9,8 @@ import { Departure, Line, Monitor } from '../../model'
 import { appRouter } from '../../server/trpc/router'
 import { trpc } from '../../utils/trpc'
 import superjson from 'superjson'
+import Head from 'next/head'
+import Header from '../../components/Header'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   console.log('prefetching')
@@ -107,21 +109,30 @@ const StationPage: NextPage = () => {
     }
   )
   return (
-    <div>
-      <div className='flex items-center justify-between my-8 mx-4'>
-        <h1 className='text-center text-5xl'>{name}</h1>
-        {station?.isFavorite !== undefined && (
-          <FavoriteToggle stationName={name} isFavorite={station.isFavorite} />
-        )}
+    <>
+      <Head>
+        <title>{name} - WienerTime</title>
+        <meta
+          name='description'
+          content='Real-time traffic data of Wiener Linien monitors.'
+        />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
+      <Header />
+      <div>
+        <div className='flex items-center justify-between my-8 mx-4'>
+          <h1 className='text-center text-5xl'>{name}</h1>
+          <FavoriteToggle stationName={name} isFavorite={station?.isFavorite} />
+        </div>
+        <div className='flex flex-wrap justify-center m-2'>
+          {!monitors && <Spinner />}
+          {monitors?.length === 0 && <span>No data</span>}
+          {monitors?.map((monitor, index) => (
+            <MonitorComponent key={index} monitor={monitor} />
+          ))}
+        </div>
       </div>
-      <div className='flex flex-wrap justify-center m-2'>
-        {!monitors && <Spinner />}
-        {monitors?.length === 0 && <span>No data</span>}
-        {monitors?.map((monitor, index) => (
-          <MonitorComponent key={index} monitor={monitor} />
-        ))}
-      </div>
-    </div>
+    </>
   )
 }
 

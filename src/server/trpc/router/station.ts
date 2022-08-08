@@ -12,20 +12,20 @@ export const stationRouter = t.router({
         stops: stops.map((stop) => stop.StopID),
       }))
     }
+
+    const user = await ctx.prisma.user.findFirstOrThrow({
+      select: {
+        favorites: true,
+      },
+      where: {
+        id: {
+          equals: userId,
+        },
+      },
+    })
+
     const favorites = new Set(
-      (
-        await ctx.prisma.favorite.findMany({
-          select: {
-            name: true,
-          },
-          where: {
-            userId: {
-              equals: userId,
-            },
-          },
-          orderBy: [{ name: 'asc' }],
-        })
-      ).map(({ name }) => name)
+      user.favorites.map(({ name }) => name)
     )
 
     return Object.entries(raw).map(([name, stops]) => ({

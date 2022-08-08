@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react'
 import { FC } from 'react'
 import { trpc } from '../utils/trpc'
 
-const FavoriteToggle: FC<{ stationName: string; isFavorite: boolean }> = ({
+const FavoriteToggle: FC<{ stationName: string; isFavorite?: boolean }> = ({
   stationName,
   isFavorite,
 }) => {
@@ -33,12 +33,12 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite: boolean }> = ({
   return (
     <button
       onClick={toggleFavorite}
-      disabled={changeInProgress}
+      disabled={isFavorite === undefined || changeInProgress}
       className={`${changeInProgress && 'motion-safe:animate-bounce'}`}
     >
       <Icon
         icon={isFavorite ? 'fa:heart' : 'fa:heart-o'}
-        className={'text-red-500 text-2xl'}
+        className={`${isFavorite !== undefined ? 'text-red-500' : 'text-gray-300'} text-2xl`}
       />
     </button>
   )
