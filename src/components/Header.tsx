@@ -12,8 +12,8 @@ const Header: FC = () => {
         <div className='w-full flex items-center justify-between'>
           <Link href='/' className='cursor-pointer'>
             <img
-              src={session.data.user?.image}
-              alt={session.data.user?.name}
+              src={session.data.user?.image ?? ''}
+              alt={session.data.user?.name ?? ''}
               className='rounded-lg w-12 aspect-1/1'
             />
           </Link>

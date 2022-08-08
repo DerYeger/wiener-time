@@ -2,7 +2,7 @@ import { createSSGHelpers } from '@trpc/react/ssg'
 import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import { trpc } from '../utils/trpc'
-import { FC, useMemo, useState } from 'react'
+import { FC, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { appRouter } from '../server/trpc/router'
 import superjson from 'superjson'
@@ -10,6 +10,7 @@ import FavoriteToggle from '../components/FavoriteToggle'
 import Header from '../components/Header'
 import { useSession } from 'next-auth/react'
 import { useDebounce } from 'use-debounce'
+import ViewportList from 'react-viewport-list'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssg = createSSGHelpers({
@@ -45,13 +46,25 @@ const Stations: FC<{
   stations: { name: string; stops: number[]; isFavorite?: boolean }[]
   onlyFavorites?: boolean
 }> = ({ stations, onlyFavorites = false }) => {
+  const ref = useRef(null)
+  const included = useMemo(
+    () => stations.filter(({ isFavorite }) => !onlyFavorites || isFavorite),
+    [stations, onlyFavorites]
+  )
   return (
-    <div className='flex flex-col gap-4'>
-      {stations
-        .filter(({ isFavorite }) => !onlyFavorites || isFavorite)
-        .map((station) => (
-          <Station key={station.name} station={station} />
-        ))}
+    <div className='scroll-container' ref={ref}>
+      <ViewportList
+        viewportRef={ref}
+        items={included}
+        itemMinSize={24}
+        margin={16}
+      >
+        {(station) => (
+          <div key={station.name} className='mb-4'>
+            <Station station={station} />
+          </div>
+        )}
+      </ViewportList>
     </div>
   )
 }
