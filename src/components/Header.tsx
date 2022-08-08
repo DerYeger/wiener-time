@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react'
 import { signOut, signIn, useSession } from 'next-auth/react'
+import Link from 'next/link'
 import { FC } from 'react'
 
 const Header: FC = () => {
@@ -9,11 +10,13 @@ const Header: FC = () => {
     <header className='p-2 pr-4 bg-gray-100 border-b-gray-200 border-b-2'>
       {session.data && (
         <div className='w-full flex items-center justify-between'>
-          <img
-            src={session.data.user?.image}
-            alt={session.data.user?.name}
-            className='rounded-lg w-16 aspect-1/1'
-          />
+          <Link href='/' className='cursor-pointer'>
+            <img
+              src={session.data.user?.image}
+              alt={session.data.user?.name}
+              className='rounded-lg w-12 aspect-1/1'
+            />
+          </Link>
           <button
             title='Logout'
             onClick={() => signOut()}
@@ -24,8 +27,8 @@ const Header: FC = () => {
         </div>
       )}
       {!session.data && (
-        <div className='w-full flex items-center justify-between h-[64px]'>
-          <h1 className='text-3xl'>WienerTime</h1>
+        <div className='w-full flex items-center justify-between h-12'>
+          <h1 className='text-3xl font-light'>WienerTime</h1>
           <button
             title='Login'
             onClick={() => signIn()}
