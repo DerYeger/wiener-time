@@ -3,7 +3,7 @@ import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { trpc } from '../utils/trpc'
-import { FC } from 'react'
+import { FC, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { appRouter } from '../server/trpc/router'
 import superjson from 'superjson'
@@ -60,6 +60,13 @@ const Stations: FC<{
 const Home: NextPage = () => {
   const session = useSession()
   const { data: stations } = trpc.proxy.station.getAll.useQuery()
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const filteredStations = useMemo(() => {
+    const normalizedSearchQuery = searchQuery.toLowerCase()
+    return stations?.filter((station) =>
+      station.name.toLowerCase().includes(normalizedSearchQuery)
+    )
+  }, [stations, searchQuery])
   if (!stations) {
     return <span>Loading</span>
   }
@@ -88,8 +95,17 @@ const Home: NextPage = () => {
           <Stations stations={stations} onlyFavorites />
         </div>
         <div className='w-full max-w-md'>
-          <h1 className='text-2xl font-bold mb-4'>All</h1>
-          <Stations stations={stations} />
+          <div className='flex gap-2 justify-between items-center  mb-4'>
+            <h1 className='text-2xl font-bold'>All</h1>
+            <input
+              type='text'
+              className='bg-gray-200 px-2 py-1 rounded border border-gray-300'
+              value={searchQuery}
+              placeholder='Search'
+              onInput={(event) => setSearchQuery(event.currentTarget.value)}
+            />
+          </div>
+          <Stations stations={filteredStations ?? []} />
         </div>
       </main>
     </>
