@@ -79,15 +79,15 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header />
-      <main className='container flex flex-col items-center min-h-screen px-4 my-4 mx-auto gap-8'>
+      <main className='flex flex-col md:flex-row md:justify-center items-center md:items-start min-h-screen px-4 my-4 mx-auto gap-8 md:gap-16'>
         {session.data && (
-          <div className='w-full max-w-md'>
+          <div className='w-full md:w-1/4'>
             <h1 className='text-2xl font-bold mb-4'>Favorites</h1>
             <Stations stations={stations} onlyFavorites />
           </div>
         )}
-        <div className='w-full max-w-md'>
-          <div className='flex gap-2 justify-between items-center  mb-4'>
+        <div className='w-full md:w-3/4 md:justify-center'>
+          <div className='flex gap-4 justify-between items-center mb-4'>
             <h1 className='text-2xl font-bold'>All</h1>
             <input
               type='text'
