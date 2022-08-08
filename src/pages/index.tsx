@@ -10,13 +10,13 @@ import superjson from 'superjson'
 import { StaticStopData } from '../model'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const ssg = await createSSGHelpers({
+  const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: context,
+    ctx: context as any,
     transformer: superjson,
   })
 
-  await Promise.all([ssg.fetchQuery('station.getAll')])
+  await ssg.fetchQuery('station.getAll')
 
   return {
     props: {
