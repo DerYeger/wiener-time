@@ -29,7 +29,7 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite: boolean }> = ({
   return (
     <button onClick={toggleFavorite}>
       <Icon
-        icon={isFavorite ? 'fa:heart-o' : 'fa:heart'}
+        icon={isFavorite ? 'fa:heart' : 'fa:heart-o'}
         className='text-red-500 text-2xl'
       />
     </button>

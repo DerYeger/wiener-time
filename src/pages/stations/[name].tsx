@@ -1,11 +1,33 @@
 import { Icon } from '@iconify/react'
-import { NextPage } from 'next'
+import { createSSGHelpers } from '@trpc/react/ssg'
+import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { FC, useMemo } from 'react'
 import FavoriteToggle from '../../components/FavoriteToggle'
 import Spinner from '../../components/Spinner'
 import { Departure, Line, Monitor } from '../../model'
+import { appRouter } from '../../server/trpc/router'
 import { trpc } from '../../utils/trpc'
+import superjson from 'superjson'
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  console.log('prefetching')
+
+  const name = context.query.name as string
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: context as any,
+    transformer: superjson,
+  })
+
+  await ssg.fetchQuery('station.getByStationName', name)
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  }
+}
 
 const DepartureListItem: FC<{ departure: Departure }> = ({ departure }) => {
   let delay = 0
