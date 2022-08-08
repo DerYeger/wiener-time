@@ -22,9 +22,9 @@ export const VehicleType = z.enum(['ptBusCity', 'ptMetro', 'ptTram'])
 
 export const DepartureSchema = z.object({
   departureTime: z.object({
-    timePlanned: z.string(),
+    timePlanned: z.string().optional(),
     timeReal: z.string().optional(),
-    countdown: z.number(),
+    countdown: z.number().optional(),
   }),
   vehicle: VehicleSchema.extend({
     foldingRamp: z.boolean().optional(),

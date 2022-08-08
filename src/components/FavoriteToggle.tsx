@@ -8,12 +8,14 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite: boolean }> = ({
   const utils = trpc.useContext()
   const addFavorite = trpc.proxy.station.addFavorite.useMutation({
     onSuccess() {
-      utils.invalidateQueries('station.getAll')
+      utils.invalidateQueries(['station.getAll'])
+      utils.invalidateQueries(['station.getByStationName', stationName])
     },
   })
   const removeFavorite = trpc.proxy.station.removeFavorite.useMutation({
     onSuccess() {
-      utils.invalidateQueries('station.getAll')
+      utils.invalidateQueries(['station.getAll'])
+      utils.invalidateQueries(['station.getByStationName', stationName])
     },
   })
   if (isFavorite) {
