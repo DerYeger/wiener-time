@@ -9,6 +9,7 @@ import superjson from 'superjson'
 import FavoriteToggle from '../components/FavoriteToggle'
 import Header from '../components/Header'
 import { useSession } from 'next-auth/react'
+import { useDebounce } from 'use-debounce'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssg = createSSGHelpers({
@@ -59,12 +60,13 @@ const Home: NextPage = () => {
   const session = useSession()
   const { data: stations } = trpc.proxy.station.getAll.useQuery()
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300)
   const filteredStations = useMemo(() => {
-    const normalizedSearchQuery = searchQuery.toLowerCase()
+    const normalizedSearchQuery = debouncedSearchQuery.toLowerCase()
     return stations?.filter((station) =>
       station.name.toLowerCase().includes(normalizedSearchQuery)
     )
-  }, [stations, searchQuery])
+  }, [stations, debouncedSearchQuery])
   if (!stations) {
     return <span>Loading</span>
   }
@@ -94,7 +96,7 @@ const Home: NextPage = () => {
               className='bg-gray-100 px-2 py-1 rounded border border-gray-300'
               value={searchQuery}
               placeholder='Search'
-              onInput={(event) => setSearchQuery(event.currentTarget.value)}
+              onChange={(event) => setSearchQuery(event.currentTarget.value)}
             />
           </div>
           <Stations stations={filteredStations ?? []} />
