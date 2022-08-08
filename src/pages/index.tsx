@@ -11,11 +11,12 @@ import Header from '../components/Header'
 import { useSession } from 'next-auth/react'
 import { useDebounce } from 'use-debounce'
 import ViewportList from 'react-viewport-list'
+import { createContext } from '../server/trpc/context'
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: context as any,
+    ctx: await createContext({ req, res } as any),
     transformer: superjson,
   })
 

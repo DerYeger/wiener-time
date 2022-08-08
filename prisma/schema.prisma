@@ -17,11 +17,26 @@ datasource db {
 }
 
 model Favorite {
-    id String @id @default(cuid())
-    name String
+    stationName String
+    station Station @relation(fields: [stationName], references: [name], onDelete: Cascade)
     userId String
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    @@unique([name, userId])
+
+    @@id([stationName, userId])
+}
+
+model Station {
+  name String @id
+  stops Stop[]
+  favorites Favorite[]
+  // longitude Float?
+  // latitude Float?
+}
+
+model Stop {
+  id Int @id
+  stationName String
+  station Station @relation(fields: [stationName], references: [name], onDelete: Cascade)
 }
 
 // Necessary for Next auth
