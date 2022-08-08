@@ -1,7 +1,6 @@
 import { createSSGHelpers } from '@trpc/react/ssg'
 import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
-import { signIn, signOut, useSession } from 'next-auth/react'
 import { trpc } from '../utils/trpc'
 import { FC, useMemo, useState } from 'react'
 import Link from 'next/link'
@@ -9,6 +8,7 @@ import { appRouter } from '../server/trpc/router'
 import superjson from 'superjson'
 import { StaticStopData } from '../model'
 import FavoriteToggle from '../components/FavoriteToggle'
+import Header from '../components/Header'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssg = createSSGHelpers({
@@ -58,7 +58,6 @@ const Stations: FC<{
 }
 
 const Home: NextPage = () => {
-  const session = useSession()
   const { data: stations } = trpc.proxy.station.getAll.useQuery()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const filteredStations = useMemo(() => {
@@ -80,16 +79,8 @@ const Home: NextPage = () => {
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className='container flex flex-col items-center min-h-screen p-4 mx-auto gap-8'>
-        <div>
-          {session.data && (
-            <div className='flex flex-col items-center'>
-              <span>Welcome {session.data.user?.name}</span>
-              <button onClick={() => signOut()}>Logout</button>
-            </div>
-          )}
-          {!session.data && <button onClick={() => signIn()}>Login</button>}
-        </div>
+      <Header />
+      <main className='container flex flex-col items-center min-h-screen px-4 my-4 mx-auto gap-8'>
         <div className='w-full max-w-md'>
           <h1 className='text-2xl font-bold mb-4'>Favorites</h1>
           <Stations stations={stations} onlyFavorites />
@@ -99,7 +90,7 @@ const Home: NextPage = () => {
             <h1 className='text-2xl font-bold'>All</h1>
             <input
               type='text'
-              className='bg-gray-200 px-2 py-1 rounded border border-gray-300'
+              className='bg-gray-100 px-2 py-1 rounded border border-gray-300'
               value={searchQuery}
               placeholder='Search'
               onInput={(event) => setSearchQuery(event.currentTarget.value)}
