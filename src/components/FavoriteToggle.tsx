@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import { FC } from 'react'
 import { trpc } from '../utils/trpc'
 
@@ -18,22 +19,19 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite: boolean }> = ({
       utils.invalidateQueries(['station.getByStationName', stationName])
     },
   })
-  if (isFavorite) {
-    return (
-      <button
-        onClick={() => removeFavorite.mutate(stationName)}
-        className='bg-red-500 rounded px-4 py-2 text-white'
-      >
-        Unfav
-      </button>
-    )
+
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      return removeFavorite.mutateAsync(stationName)
+    }
+    return addFavorite.mutateAsync(stationName)
   }
   return (
-    <button
-      onClick={() => addFavorite.mutate(stationName)}
-      className='bg-blue-500 rounded px-4 py-2 text-white'
-    >
-      Fav
+    <button onClick={toggleFavorite}>
+      <Icon
+        icon={isFavorite ? 'fa:heart-o' : 'fa:heart'}
+        className='text-red-500 text-2xl'
+      />
     </button>
   )
 }
