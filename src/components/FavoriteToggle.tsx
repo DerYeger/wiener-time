@@ -8,17 +8,21 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite: boolean }> = ({
 }) => {
   const utils = trpc.useContext()
   const addFavorite = trpc.proxy.station.addFavorite.useMutation({
-    onSuccess() {
-      utils.invalidateQueries(['station.getAll'])
-      utils.invalidateQueries(['station.getByStationName', stationName])
-    },
+    onSuccess: () =>
+      Promise.all([
+        utils.invalidateQueries(['station.getAll']),
+        utils.invalidateQueries(['station.getByStationName', stationName]),
+      ]),
   })
   const removeFavorite = trpc.proxy.station.removeFavorite.useMutation({
-    onSuccess() {
-      utils.invalidateQueries(['station.getAll'])
-      utils.invalidateQueries(['station.getByStationName', stationName])
-    },
+    onSuccess: () =>
+      Promise.all([
+        utils.invalidateQueries(['station.getAll']),
+        utils.invalidateQueries(['station.getByStationName', stationName]),
+      ]),
   })
+
+  const changeInProgress = addFavorite.isLoading || removeFavorite.isLoading
 
   const toggleFavorite = () => {
     if (isFavorite) {
@@ -27,10 +31,14 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite: boolean }> = ({
     return addFavorite.mutateAsync(stationName)
   }
   return (
-    <button onClick={toggleFavorite}>
+    <button
+      onClick={toggleFavorite}
+      disabled={changeInProgress}
+      className={`${changeInProgress && 'motion-safe:animate-bounce'}`}
+    >
       <Icon
         icon={isFavorite ? 'fa:heart' : 'fa:heart-o'}
-        className='text-red-500 text-2xl'
+        className={'text-red-500 text-2xl'}
       />
     </button>
   )
