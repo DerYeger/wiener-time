@@ -6,7 +6,6 @@ import { FC, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { appRouter } from '../server/trpc/router'
 import superjson from 'superjson'
-import { StaticStopData } from '../model'
 import FavoriteToggle from '../components/FavoriteToggle'
 import Header from '../components/Header'
 
@@ -27,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 const Station: FC<{
-  station: { name: string; stops: StaticStopData[]; isFavorite?: boolean }
+  station: { name: string; stops: number[]; isFavorite?: boolean }
 }> = ({ station }) => {
   return (
     <div className='flex gap-2 items-center justify-between'>
@@ -43,7 +42,7 @@ const Station: FC<{
 }
 
 const Stations: FC<{
-  stations: { name: string; stops: StaticStopData[]; isFavorite?: boolean }[]
+  stations: { name: string; stops: number[]; isFavorite?: boolean }[]
   onlyFavorites?: boolean
 }> = ({ stations, onlyFavorites = false }) => {
   return (

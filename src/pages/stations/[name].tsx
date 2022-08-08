@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react'
 import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import FavoriteToggle from '../../components/FavoriteToggle'
 import Spinner from '../../components/Spinner'
 import { Departure, Line, Monitor } from '../../model'
@@ -100,13 +100,12 @@ const StationPage: NextPage = () => {
   const router = useRouter()
   const name = router.query.name as string
   const { data: station } = trpc.proxy.station.getByStationName.useQuery(name)
-  const stopIds = useMemo(
-    () => station?.stops.map((stop) => stop.StopID) ?? [],
-    [station]
+  const { data: monitors } = trpc.proxy.monitor.getByStopIds.useQuery(
+    station?.stops ?? [],
+    {
+      refetchInterval: 30 * 1000,
+    }
   )
-  const { data: monitors } = trpc.proxy.monitor.getByStopIds.useQuery(stopIds, {
-    refetchInterval: 30 * 1000,
-  })
   return (
     <div>
       <div className='flex items-center justify-between my-8 mx-4'>

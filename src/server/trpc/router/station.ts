@@ -9,7 +9,7 @@ export const stationRouter = t.router({
     if (!userId) {
       return Object.entries(raw).map(([name, stops]) => ({
         name,
-        stops,
+        stops: stops.map((stop) => stop.StopID),
       }))
     }
     const favorites = new Set(
@@ -30,7 +30,7 @@ export const stationRouter = t.router({
 
     return Object.entries(raw).map(([name, stops]) => ({
       name,
-      stops,
+      stops: stops.map((stop) => stop.StopID),
       isFavorite: favorites.has(name),
     }))
   }),
@@ -40,7 +40,7 @@ export const stationRouter = t.router({
       const stops = (await lib.fetchStaticStopData())[input] ?? []
       const userId = ctx.session?.user?.id
       if (!userId) {
-        return { name: input, stops }
+        return { name: input, stops: stops.map((stop) => stop.StopID) }
       }
       const isFavorite = await ctx.prisma.favorite.findFirst({
         select: {
@@ -56,7 +56,11 @@ export const stationRouter = t.router({
         },
       })
 
-      return { name: input, stops, isFavorite: !!isFavorite }
+      return {
+        name: input,
+        stops: stops.map((stop) => stop.StopID),
+        isFavorite: !!isFavorite,
+      }
     }),
   addFavorite: authedProcedure
     .input(z.string())
