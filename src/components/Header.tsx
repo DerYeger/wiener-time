@@ -7,7 +7,7 @@ const Header: FC = () => {
   const session = useSession()
 
   return (
-    <header className='p-2 pr-4 bg-gray-100 border-b-gray-200 border-b-2'>
+    <header className='p-2 pr-4 bg-gray-100 border-b-gray-200 border-b-2 sticky top-0'>
       {session.data && (
         <div className='w-full flex items-center justify-between'>
           <Link href='/' className='cursor-pointer'>
