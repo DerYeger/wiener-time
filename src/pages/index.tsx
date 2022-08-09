@@ -13,6 +13,7 @@ import { useDebounce } from 'use-debounce'
 import ViewportList from 'react-viewport-list'
 import { createContext } from '../server/trpc/context'
 import Nav from '../components/Nav'
+import Spinner from '../components/Spinner'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const ssg = createSSGHelpers({
@@ -84,9 +85,6 @@ const Home: NextPage = () => {
       station.name.toLowerCase().includes(normalizedSearchQuery)
     )
   }, [stations, debouncedSearchQuery])
-  if (!stations) {
-    return <span>Loading</span>
-  }
   return (
     <>
       <Head>
@@ -97,29 +95,34 @@ const Home: NextPage = () => {
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <div className='min-h-screen pb-[50px]'>
+      <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
-        <main className='flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 mx-auto gap-8 md:gap-16'>
-          {session.data && (
-            <div className='w-full md:w-1/4'>
-              <h1 className='text-2xl font-bold mb-4'>Favorites</h1>
-              <Stations stations={stations} onlyFavorites />
+        {!stations && <Spinner />}
+        {stations && (
+          <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 gap-8 md:gap-16'>
+            {session.data && (
+              <div className='w-full md:w-1/4 md:max-w-sm'>
+                <h1 className='text-3xl font-bold mb-4'>Favorites</h1>
+                <Stations stations={stations} onlyFavorites />
+              </div>
+            )}
+            <div className='w-full md:w-3/4 md:justify-center md:max-w-sm'>
+              <div className='flex gap-4 justify-between items-center mb-4'>
+                <h1 className='text-3xl font-bold'>All</h1>
+                <input
+                  type='text'
+                  className='bg-gray-100 px-2 py-1 rounded border border-gray-300'
+                  value={searchQuery}
+                  placeholder='Search'
+                  onChange={(event) =>
+                    setSearchQuery(event.currentTarget.value)
+                  }
+                />
+              </div>
+              <Stations stations={filteredStations ?? []} />
             </div>
-          )}
-          <div className='w-full md:w-3/4 md:justify-center'>
-            <div className='flex gap-4 justify-between items-center mb-4'>
-              <h1 className='text-2xl font-bold'>All</h1>
-              <input
-                type='text'
-                className='bg-gray-100 px-2 py-1 rounded border border-gray-300'
-                value={searchQuery}
-                placeholder='Search'
-                onChange={(event) => setSearchQuery(event.currentTarget.value)}
-              />
-            </div>
-            <Stations stations={filteredStations ?? []} />
-          </div>
-        </main>
+          </main>
+        )}
         <Nav />
       </div>
     </>

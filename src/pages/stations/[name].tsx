@@ -155,9 +155,9 @@ const StationPage: NextPage = () => {
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <div className='min-h-screen pb-[50px]'>
+      <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
-        <main>
+        <main className='flex-1 flex flex-col'>
           <div className='flex items-center justify-between m-4 mb-2'>
             <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
             <FavoriteToggle
@@ -165,9 +165,13 @@ const StationPage: NextPage = () => {
               isFavorite={station?.isFavorite}
             />
           </div>
-          <div className='flex flex-wrap justify-center m-2'>
+          <div className='flex flex-1 flex-wrap justify-center m-2'>
             {!monitors && <Spinner />}
-            {monitors?.length === 0 && <span>No data</span>}
+            {monitors?.length === 0 && (
+              <div className='flex-1 flex items-center justify-center'>
+                No data available :(
+              </div>
+            )}
             {monitors?.map((monitor, index) => (
               <MonitorComponent key={index} monitor={monitor} />
             ))}

@@ -7,7 +7,7 @@ const Header: FC = () => {
   const session = useSession()
 
   return (
-    <header className='p-2 pr-4 bg-gray-100 border-b-gray-200 border-b-2 sticky top-0'>
+    <header className='py-2 px-4 bg-gray-100 border-b-gray-200 border-b-2 sticky top-0'>
       {session.data && (
         <div className='w-full flex items-center justify-between'>
           <Image
@@ -20,7 +20,7 @@ const Header: FC = () => {
           <button
             title='Logout'
             onClick={() => signOut()}
-            className='text-xl text-gray-400 hover:text-red-600 transition-colors'
+            className='text-xl text-gray-400 hover:text-gray-600 transition-colors'
           >
             <Icon icon='fa:sign-out' />
           </button>
@@ -32,7 +32,7 @@ const Header: FC = () => {
           <button
             title='Login'
             onClick={() => signIn()}
-            className='text-xl text-gray-400 hover:text-green-600 transition-colors'
+            className='text-xl text-gray-400 hover:text-gray-600 transition-colors'
           >
             <Icon icon='fa:sign-in' />
           </button>

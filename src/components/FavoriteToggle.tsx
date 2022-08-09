@@ -34,7 +34,7 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite?: boolean }> = ({
     <button
       onClick={toggleFavorite}
       disabled={isFavorite === undefined || changeInProgress}
-      className={`${changeInProgress && 'motion-safe:animate-pulse'}`}
+      className={`${changeInProgress && 'motion-safe:animate-bounce'}`}
     >
       <Icon
         icon={isFavorite ? 'fa:heart' : 'fa:heart-o'}
