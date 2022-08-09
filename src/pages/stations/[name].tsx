@@ -12,6 +12,7 @@ import superjson from 'superjson'
 import Head from 'next/head'
 import Header from '../../components/Header'
 import { createContext } from '../../server/trpc/context'
+import lineClasses from '../../lineClasses.json'
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -70,14 +71,21 @@ const DepartureListItem: FC<{ departure: Departure }> = ({ departure }) => {
   )
 }
 
+const lineClassRecord = lineClasses as Record<string, string>
+
+const LineTitle: FC<{ line: string }> = ({ line }) => {
+  const classes = lineClassRecord[line] ?? 'bg-black'
+  return <span className={`px-1 text-white rounded ${classes}`}>{line}</span>
+}
+
 const LineComponent: FC<{ line: Line; maxDepartures?: number }> = ({
   line,
   maxDepartures = 4,
 }) => {
   return (
     <div className='border-2 p-4 rounded'>
-      <h1 className='font-bold'>
-        {line.name} - {line.towards}
+      <h1 className='font-bold flex gap-2 items-center'>
+        <LineTitle line={line.name} /> {line.towards}
       </h1>
       <hr className='my-2' />
       <div className='flex flex-col gap-2'>
