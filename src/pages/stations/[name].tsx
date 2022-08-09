@@ -145,6 +145,9 @@ const StationPage: NextPage = () => {
       refetchInterval: 30 * 1000,
     }
   )
+  const { data: isFavorite } = trpc.proxy.favorite.getByStationName.useQuery({
+    stationName,
+  })
   return (
     <>
       <Head>
@@ -160,10 +163,7 @@ const StationPage: NextPage = () => {
         <main className='flex-1 flex flex-col'>
           <div className='flex items-center justify-between m-4 mb-2'>
             <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
-            <FavoriteToggle
-              stationName={stationName}
-              isFavorite={station?.isFavorite}
-            />
+            <FavoriteToggle stationName={stationName} isFavorite={isFavorite} />
           </div>
           <div className='flex flex-1 flex-wrap justify-center m-2'>
             {!monitors && <Spinner />}

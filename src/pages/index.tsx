@@ -79,12 +79,22 @@ const Home: NextPage = () => {
   const { data: stations } = trpc.proxy.station.getAll.useQuery()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300)
+  const { data: favorites } = trpc.proxy.favorite.getAll.useQuery()
+  const mappedStations = useMemo(
+    () =>
+      stations?.map((station) => ({
+        ...station,
+        isFavorite: favorites?.has(station.name),
+      })),
+    [stations, favorites]
+  )
   const filteredStations = useMemo(() => {
     const normalizedSearchQuery = debouncedSearchQuery.toLowerCase()
-    return stations?.filter((station) =>
+    return mappedStations?.filter((station) =>
       station.name.toLowerCase().includes(normalizedSearchQuery)
     )
-  }, [stations, debouncedSearchQuery])
+  }, [mappedStations, debouncedSearchQuery])
+
   return (
     <>
       <Head>
@@ -97,13 +107,13 @@ const Home: NextPage = () => {
       </Head>
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
-        {!stations && <Spinner />}
-        {stations && (
+        {!mappedStations && <Spinner />}
+        {mappedStations && (
           <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 gap-8 md:gap-16'>
             {session.data && (
               <div className='w-full md:w-1/4 md:max-w-sm'>
                 <h1 className='text-3xl font-bold mb-4'>Favorites</h1>
-                <Stations stations={stations} onlyFavorites />
+                <Stations stations={mappedStations} onlyFavorites />
               </div>
             )}
             <div className='w-full md:w-3/4 md:justify-center md:max-w-sm'>

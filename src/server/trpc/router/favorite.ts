@@ -3,6 +3,47 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 
 export const favoriteRouter = t.router({
+  getAll: authedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id
+    if (!userId) {
+      return undefined
+    }
+    return new Set([
+      ...(
+        await ctx.prisma.user
+          .findFirstOrThrow({
+            select: {
+              favorites: true,
+            },
+            where: {
+              id: {
+                equals: userId,
+              },
+            },
+          })
+          .favorites()
+      ).map((favorite) => favorite.name),
+    ])
+  }),
+  getByStationName: authedProcedure
+    .input(z.object({ stationName: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id
+      if (!userId) {
+        return undefined
+      }
+      const favorite = await ctx.prisma.favorite.findFirst({
+        where: {
+          userId: {
+            equals: userId,
+          },
+          name: {
+            equals: input.stationName,
+          },
+        },
+      })
+      return favorite !== null
+    }),
   add: authedProcedure
     .input(z.object({ stationName: z.string() }))
     .mutation(async ({ ctx, input }) => {

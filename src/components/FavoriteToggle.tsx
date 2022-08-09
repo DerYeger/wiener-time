@@ -10,10 +10,10 @@ const FavoriteToggle: FC<{ stationName: string; isFavorite?: boolean }> = ({
   const invalidateQueries = useCallback(
     async () =>
       Promise.all([
-        utils.invalidateQueries(['station.getAll']),
-        utils.invalidateQueries(['station.getByName', { stationName }]),
+        utils.invalidateQueries(['favorite.getAll']),
+        utils.invalidateQueries(['favorite.getByStationName', { stationName }]),
       ]),
-    [stationName, utils]
+    [utils, stationName]
   )
   const addFavorite = trpc.proxy.favorite.add.useMutation({
     onSuccess: () => invalidateQueries(),
