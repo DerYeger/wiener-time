@@ -13,6 +13,8 @@ import Head from 'next/head'
 import Header from '../../components/Header'
 import { createContext } from '../../server/trpc/context'
 import lineClasses from '../../lineClasses.json'
+import Map, { Marker } from 'react-map-gl'
+import { clientEnv } from '../../env/schema.mjs'
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -143,6 +145,31 @@ const StationPage: NextPage = () => {
             isFavorite={station?.isFavorite}
           />
         </div>
+        {monitors && monitors.length > 0 && (
+          <div>
+            <Map
+              initialViewState={{
+                longitude: monitors[0]!.locationStop.geometry.coordinates[0],
+                latitude: monitors[0]!.locationStop.geometry.coordinates[1],
+              }}
+              mapboxAccessToken={clientEnv.NEXT_PUBLIC_MAPBOX_TOKEN}
+              style={{ height: 200 }}
+              mapStyle='mapbox://styles/mapbox/dark-v9'
+              reuseMaps
+              zoom={15}
+              interactive={false}
+            >
+              {monitors.map((monitor, index) => (
+                <Marker
+                  color='red'
+                  key={index}
+                  longitude={monitor.locationStop.geometry.coordinates[0]}
+                  latitude={monitor.locationStop.geometry.coordinates[1]}
+                />
+              ))}
+            </Map>
+          </div>
+        )}
         <div className='flex flex-wrap justify-center m-2'>
           {!monitors && <Spinner />}
           {monitors?.length === 0 && <span>No data</span>}
