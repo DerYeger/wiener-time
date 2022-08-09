@@ -3,9 +3,9 @@ import { z } from 'zod'
 import lib from '../../../lib'
 
 export const monitorRouter = t.router({
-  getByStopIds: t.procedure
-    .input(z.array(z.number()))
+  getAllByStopIds: t.procedure
+    .input(z.object({ stopIds: z.array(z.number()) }))
     .query(async ({ input }) => {
-      return await lib.fetchMonitorData(input)
+      return lib.fetchMonitorData(input.stopIds)
     }),
 })

@@ -3,11 +3,13 @@ import { t } from '../utils'
 import { stationRouter } from './station'
 import { authRouter } from './auth'
 import { monitorRouter } from './monitor'
+import { favoriteRouter } from './favorite'
 
 export const appRouter = t.router({
-  station: stationRouter,
-  monitor: monitorRouter,
   auth: authRouter,
+  favorite: favoriteRouter,
+  monitor: monitorRouter,
+  station: stationRouter,
 })
 
 // export type definition of API

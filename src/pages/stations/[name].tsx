@@ -18,14 +18,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   res,
   query,
 }) => {
-  const name = query.name as string
+  const stationName = query.name as string
   const ssg = createSSGHelpers({
     router: appRouter,
     ctx: await createContext({ req, res } as any),
     transformer: superjson,
   })
 
-  await ssg.fetchQuery('station.getByStationName', name)
+  await ssg.fetchQuery('station.getByName', { stationName })
 
   return {
     props: {
@@ -105,11 +105,13 @@ const MonitorComponent: FC<{ monitor: Monitor }> = ({ monitor }) => {
 
 const StationPage: NextPage = () => {
   const router = useRouter()
-  const name = router.query.name as string
-  const { data: station } = trpc.proxy.station.getByStationName.useQuery(name)
+  const stationName = router.query.name as string
+  const { data: station } = trpc.proxy.station.getByName.useQuery({
+    stationName,
+  })
 
-  const { data: monitors } = trpc.proxy.monitor.getByStopIds.useQuery(
-    station?.stops ?? [],
+  const { data: monitors } = trpc.proxy.monitor.getAllByStopIds.useQuery(
+    { stopIds: station?.stops ?? [] },
     {
       refetchInterval: 30 * 1000,
     }
@@ -117,7 +119,7 @@ const StationPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{name} - WienerTime</title>
+        <title>{stationName} - WienerTime</title>
         <meta
           name='description'
           content='Real-time traffic data of Wiener Linien monitors.'
@@ -127,8 +129,11 @@ const StationPage: NextPage = () => {
       <Header />
       <main>
         <div className='flex items-center justify-between my-8 mx-4'>
-          <h1 className='text-3xl sm:text-4xl md:text-5xl'>{name}</h1>
-          <FavoriteToggle stationName={name} isFavorite={station?.isFavorite} />
+          <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
+          <FavoriteToggle
+            stationName={stationName}
+            isFavorite={station?.isFavorite}
+          />
         </div>
         <div className='flex flex-wrap justify-center m-2'>
           {!monitors && <Spinner />}
