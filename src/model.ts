@@ -8,7 +8,7 @@ export const Geometry = z.object({
 export const VehicleSchema = z.object({
   name: z.string(),
   towards: z.string(),
-  direction: z.enum(['R', 'L', 'H']),
+  direction: z.enum(['R', 'H']),
   platform: z.string().optional(),
   richtungsId: z.string(),
   barrierFree: z.boolean(),
@@ -18,7 +18,14 @@ export const VehicleSchema = z.object({
 
 export type Vehicle = z.infer<typeof VehicleSchema>
 
-export const VehicleType = z.enum(['ptBusCity', 'ptMetro', 'ptTram'])
+export const VehicleType = z.enum([
+  'ptBusCity',
+  'ptBusNight',
+  'ptMetro',
+  'ptTram',
+  'ptTramVRT',
+  'ptTramWLB',
+])
 
 export const DepartureSchema = z.object({
   departureTime: z.object({
