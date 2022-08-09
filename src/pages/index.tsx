@@ -35,7 +35,9 @@ const Station: FC<{
 }> = ({ station }) => {
   return (
     <div className='flex gap-2 items-center justify-between'>
-      <Link href={`/stations/${station.name}`}>{station.name}</Link>
+      <Link href={`/stations/${station.name}`} passHref>
+        <a>{station.name}</a>
+      </Link>
       <FavoriteToggle
         stationName={station.name}
         isFavorite={station.isFavorite}
