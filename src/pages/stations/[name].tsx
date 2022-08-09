@@ -13,6 +13,7 @@ import Head from 'next/head'
 import Header from '../../components/Header'
 import { createContext } from '../../server/trpc/context'
 import lineClasses from '../../lineClasses.json'
+import Nav from '../../components/Nav'
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -154,23 +155,26 @@ const StationPage: NextPage = () => {
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Header />
-      <main>
-        <div className='flex items-center justify-between m-4'>
-          <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
-          <FavoriteToggle
-            stationName={stationName}
-            isFavorite={station?.isFavorite}
-          />
-        </div>
-        <div className='flex flex-wrap justify-center m-2'>
-          {!monitors && <Spinner />}
-          {monitors?.length === 0 && <span>No data</span>}
-          {monitors?.map((monitor, index) => (
-            <MonitorComponent key={index} monitor={monitor} />
-          ))}
-        </div>
-      </main>
+      <div className='min-h-screen pb-[50px]'>
+        <Header />
+        <main>
+          <div className='flex items-center justify-between m-4 mb-2'>
+            <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
+            <FavoriteToggle
+              stationName={stationName}
+              isFavorite={station?.isFavorite}
+            />
+          </div>
+          <div className='flex flex-wrap justify-center m-2'>
+            {!monitors && <Spinner />}
+            {monitors?.length === 0 && <span>No data</span>}
+            {monitors?.map((monitor, index) => (
+              <MonitorComponent key={index} monitor={monitor} />
+            ))}
+          </div>
+        </main>
+        <Nav />
+      </div>
     </>
   )
 }

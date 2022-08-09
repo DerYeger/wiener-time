@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react'
 import { useDebounce } from 'use-debounce'
 import ViewportList from 'react-viewport-list'
 import { createContext } from '../server/trpc/context'
+import Nav from '../components/Nav'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const ssg = createSSGHelpers({
@@ -94,28 +95,31 @@ const Home: NextPage = () => {
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Header />
-      <main className='flex flex-col md:flex-row md:justify-center items-center md:items-start min-h-screen px-4 my-4 mx-auto gap-8 md:gap-16'>
-        {session.data && (
-          <div className='w-full md:w-1/4'>
-            <h1 className='text-2xl font-bold mb-4'>Favorites</h1>
-            <Stations stations={stations} onlyFavorites />
+      <div className='min-h-screen pb-[50px]'>
+        <Header />
+        <main className='flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 mx-auto gap-8 md:gap-16'>
+          {session.data && (
+            <div className='w-full md:w-1/4'>
+              <h1 className='text-2xl font-bold mb-4'>Favorites</h1>
+              <Stations stations={stations} onlyFavorites />
+            </div>
+          )}
+          <div className='w-full md:w-3/4 md:justify-center'>
+            <div className='flex gap-4 justify-between items-center mb-4'>
+              <h1 className='text-2xl font-bold'>All</h1>
+              <input
+                type='text'
+                className='bg-gray-100 px-2 py-1 rounded border border-gray-300'
+                value={searchQuery}
+                placeholder='Search'
+                onChange={(event) => setSearchQuery(event.currentTarget.value)}
+              />
+            </div>
+            <Stations stations={filteredStations ?? []} />
           </div>
-        )}
-        <div className='w-full md:w-3/4 md:justify-center'>
-          <div className='flex gap-4 justify-between items-center mb-4'>
-            <h1 className='text-2xl font-bold'>All</h1>
-            <input
-              type='text'
-              className='bg-gray-100 px-2 py-1 rounded border border-gray-300'
-              value={searchQuery}
-              placeholder='Search'
-              onChange={(event) => setSearchQuery(event.currentTarget.value)}
-            />
-          </div>
-          <Stations stations={filteredStations ?? []} />
-        </div>
-      </main>
+        </main>
+        <Nav />
+      </div>
     </>
   )
 }
