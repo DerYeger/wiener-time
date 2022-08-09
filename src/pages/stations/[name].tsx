@@ -35,6 +35,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 }
 
+const formatMinutes = (minutes: number) =>
+  `${minutes} ${Math.abs(minutes) !== 1 ? 'minutes' : 'minute'}`
+
+const formatDelay = (delay: number) =>
+  `${formatMinutes(Math.abs(delay))} ${delay > 0 ? 'late' : 'early'}`
+
 const DepartureListItem: FC<{ departure: Departure }> = ({ departure }) => {
   let delay = 0
   if (departure.departureTime.timePlanned && departure.departureTime.timeReal) {
@@ -50,7 +56,7 @@ const DepartureListItem: FC<{ departure: Departure }> = ({ departure }) => {
     if (departure.departureTime.countdown === undefined) {
       return <></>
     }
-    return <span>{departure.departureTime.countdown} minutes</span>
+    return <span>{formatMinutes(departure.departureTime.countdown)}</span>
   }
 
   return (
@@ -62,11 +68,16 @@ const DepartureListItem: FC<{ departure: Departure }> = ({ departure }) => {
             className='text-xs'
             style={{ color: delay > 0 ? 'red' : 'orange' }}
           >
-            {Math.abs(delay)} minute(s) {delay > 0 ? 'late' : 'early'}
+            {formatDelay(delay)}
           </span>
         )}
       </div>
-      {departure.vehicle?.barrierFree && <Icon icon='fa:wheelchair' />}
+      <div className='flex gap-2'>
+        {departure.vehicle?.realtimeSupported && (
+          <Icon icon='fluent:live-24-regular' className='text-green-500' />
+        )}
+        {departure.vehicle?.barrierFree && <Icon icon='fa:wheelchair' />}
+      </div>
     </div>
   )
 }
