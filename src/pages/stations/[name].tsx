@@ -165,7 +165,7 @@ const StationPage: NextPage = () => {
             <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
             <FavoriteToggle stationName={stationName} isFavorite={isFavorite} />
           </div>
-          <div className='flex flex-1 flex-wrap justify-center m-2'>
+          <div className='flex flex-1 flex-wrap content-start justify-center m-2'>
             {!monitors && <Spinner />}
             {monitors?.length === 0 && (
               <div className='flex-1 flex items-center justify-center'>
