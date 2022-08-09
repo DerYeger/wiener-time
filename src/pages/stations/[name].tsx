@@ -11,12 +11,17 @@ import { trpc } from '../../utils/trpc'
 import superjson from 'superjson'
 import Head from 'next/head'
 import Header from '../../components/Header'
+import { createContext } from '../../server/trpc/context'
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const name = context.query.name as string
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  query,
+}) => {
+  const name = query.name as string
   const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: context as any,
+    ctx: await createContext({ req, res } as any),
     transformer: superjson,
   })
 
@@ -102,6 +107,7 @@ const StationPage: NextPage = () => {
   const router = useRouter()
   const name = router.query.name as string
   const { data: station } = trpc.proxy.station.getByStationName.useQuery(name)
+
   const { data: monitors } = trpc.proxy.monitor.getByStopIds.useQuery(
     station?.stops ?? [],
     {
