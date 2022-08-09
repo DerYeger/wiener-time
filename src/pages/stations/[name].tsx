@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react'
 import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import FavoriteToggle from '../../components/FavoriteToggle'
 import Spinner from '../../components/Spinner'
 import { Departure, Line, Monitor } from '../../model'
@@ -75,25 +75,34 @@ const lineClassRecord = lineClasses as Record<string, string>
 
 const LineTitle: FC<{ line: string }> = ({ line }) => {
   const classes = lineClassRecord[line] ?? 'bg-black'
-  return <span className={`px-1 text-white rounded ${classes}`}>{line}</span>
+  return <span className={`px-2 text-white rounded ${classes}`}>{line}</span>
 }
 
 const LineComponent: FC<{ line: Line; maxDepartures?: number }> = ({
   line,
   maxDepartures = 4,
 }) => {
+  const shownDepartures = useMemo(
+    () => line.departures?.departure.slice(0, maxDepartures) ?? [],
+    [line.departures.departure, maxDepartures]
+  )
   return (
-    <div className='border-2 p-4 rounded'>
-      <h1 className='font-bold flex gap-2 items-center'>
+    <div className='border-2 rounded'>
+      <span className='p-4 font-bold flex gap-2 items-center bg-gray-100'>
         <LineTitle line={line.name} /> {line.towards}
-      </h1>
-      <hr className='my-2' />
-      <div className='flex flex-col gap-2'>
-        {line.departures?.departure
-          .slice(0, maxDepartures)
-          .map((departure, index) => (
-            <DepartureListItem departure={departure} key={index} />
-          ))}
+      </span>
+      <div className='border-b-2' />
+      <div className='flex flex-col'>
+        {shownDepartures.map((departure, index) => (
+          <div
+            key={index}
+            className={`border-b-${
+              index === shownDepartures.length - 1 ? '0' : '2'
+            } px-4 py-2`}
+          >
+            <DepartureListItem departure={departure} />
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -136,7 +145,7 @@ const StationPage: NextPage = () => {
       </Head>
       <Header />
       <main>
-        <div className='flex items-center justify-between my-8 mx-4'>
+        <div className='flex items-center justify-between m-4'>
           <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
           <FavoriteToggle
             stationName={stationName}
