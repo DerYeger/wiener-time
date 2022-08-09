@@ -111,7 +111,7 @@ const Home: NextPage = () => {
                 <h1 className='text-3xl font-bold'>All</h1>
                 <input
                   type='text'
-                  className='bg-gray-100 px-2 py-1 rounded border border-gray-300'
+                  className='bg-gray-100 px-2 py-1 rounded border border-gray-300 min-w-0'
                   value={searchQuery}
                   placeholder='Search'
                   onChange={(event) =>
