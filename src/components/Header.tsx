@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import { signOut, signIn, useSession } from 'next-auth/react'
-import Link from 'next/link'
+import Image from 'next/future/image'
 import { FC } from 'react'
 
 const Header: FC = () => {
@@ -10,10 +10,12 @@ const Header: FC = () => {
     <header className='p-2 pr-4 bg-gray-100 border-b-gray-200 border-b-2 sticky top-0'>
       {session.data && (
         <div className='w-full flex items-center justify-between'>
-          <img
+          <Image
             src={session.data.user?.image ?? ''}
             alt={session.data.user?.name ?? ''}
-            className='rounded-lg w-12 aspect-1/1'
+            width={48}
+            height={48}
+            className='rounded-lg'
           />
           <button
             title='Logout'
