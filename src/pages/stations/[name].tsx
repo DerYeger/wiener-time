@@ -167,7 +167,7 @@ const StationPage: NextPage = () => {
           </div>
           <div
             className={`flex flex-1 justify-center m-2 ${
-              monitors && monitors.length > 0 ? 'flex-wrap ' : ''
+              monitors && monitors.length > 0 ? 'flex-wrap content-start' : ''
             }`}
           >
             {!monitors && <Spinner />}
