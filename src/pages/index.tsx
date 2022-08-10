@@ -40,8 +40,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 export const Station: FC<{
   station: { name: string; stops: number[]; isFavorite?: boolean }
 }> = ({ station }) => {
-  console.log('station')
-
   return (
     <div className='flex gap-2 items-center justify-between'>
       <Link href={`/stations/${lib.encodeStationName(station.name)}`} passHref>
