@@ -18,7 +18,7 @@ const AboutPage: NextPage = () => {
         <Header />
         <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 gap-8 md:gap-16'>
           <section className='flex flex-col gap-4'>
-            <h2 className='text-3xl'>Impressum</h2>
+            <h2 className='text-3xl font-bold'>Impressum</h2>
             <div className='flex flex-col gap-2'>
               <p>
                 Informationspflicht laut §5 E-Commerce Gesetz und

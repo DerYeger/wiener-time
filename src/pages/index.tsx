@@ -2,19 +2,19 @@ import { createSSGHelpers } from '@trpc/react/ssg'
 import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import { trpc } from '../utils/trpc'
-import { FC, useMemo, useRef, useState } from 'react'
+import { FC, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { appRouter } from '../server/trpc/router'
 import superjson from 'superjson'
 import FavoriteToggle from '../components/FavoriteToggle'
 import Header from '../components/Header'
-import { useSession } from 'next-auth/react'
-import { useDebounce } from 'use-debounce'
+import { signIn, useSession } from 'next-auth/react'
 import ViewportList from 'react-viewport-list'
 import { createContext } from '../server/trpc/context'
 import Nav from '../components/Nav'
 import Spinner from '../components/Spinner'
 import lib from '../lib'
+import { Icon } from '@iconify/react'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const ssg = createSSGHelpers({
@@ -37,9 +37,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 }
 
-const Station: FC<{
+export const Station: FC<{
   station: { name: string; stops: number[]; isFavorite?: boolean }
 }> = ({ station }) => {
+  console.log('station')
+
   return (
     <div className='flex gap-2 items-center justify-between'>
       <Link href={`/stations/${lib.encodeStationName(station.name)}`} passHref>
@@ -53,20 +55,15 @@ const Station: FC<{
   )
 }
 
-const Stations: FC<{
+export const Stations: FC<{
   stations: { name: string; stops: number[]; isFavorite?: boolean }[]
-  onlyFavorites?: boolean
-}> = ({ stations, onlyFavorites = false }) => {
+}> = ({ stations }) => {
   const ref = useRef(null)
-  const included = useMemo(
-    () => stations.filter(({ isFavorite }) => !onlyFavorites || isFavorite),
-    [stations, onlyFavorites]
-  )
   return (
     <div className='scroll-container' ref={ref}>
       <ViewportList
         viewportRef={ref}
-        items={included}
+        items={stations}
         itemMinSize={24}
         margin={16}
       >
@@ -80,26 +77,32 @@ const Stations: FC<{
   )
 }
 
+const SearchForYourStation: FC = () => {
+  return (
+    <Link href='/search' passHref>
+      <a className='text-neutral-600 hover:text-black transition-colors flex gap-2 items-center justify-center'>
+        <Icon icon='fa:train' />
+        Search for your station
+        <Icon icon='fa:bus' />
+      </a>
+    </Link>
+  )
+}
+
 const Home: NextPage = () => {
   const session = useSession()
   const { data: stations } = trpc.proxy.station.getAll.useQuery()
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 300)
   const { data: favorites } = trpc.proxy.favorite.getAll.useQuery()
-  const mappedStations = useMemo(
+  const favoriteStations = useMemo(
     () =>
-      stations?.map((station) => ({
-        ...station,
-        isFavorite: favorites?.has(station.name),
-      })),
+      stations
+        ?.map((station) => ({
+          ...station,
+          isFavorite: favorites?.has(station.name),
+        }))
+        .filter(({ isFavorite }) => isFavorite),
     [stations, favorites]
   )
-  const filteredStations = useMemo(() => {
-    const normalizedSearchQuery = debouncedSearchQuery.toLowerCase()
-    return mappedStations?.filter((station) =>
-      station.name.toLowerCase().includes(normalizedSearchQuery)
-    )
-  }, [mappedStations, debouncedSearchQuery])
 
   return (
     <>
@@ -113,32 +116,48 @@ const Home: NextPage = () => {
       </Head>
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
-        {!mappedStations && <Spinner />}
-        {mappedStations && (
-          <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 gap-8 md:gap-16'>
-            {session.data && (
-              <div className='w-full md:w-1/4 md:max-w-sm'>
-                <h1 className='text-3xl font-bold mb-4'>Favorites</h1>
-                <Stations stations={mappedStations} onlyFavorites />
+        <main className='flex-1 flex flex-col px-4 mt-4 items-center justify-between'>
+          {!session.data && (
+            <>
+              <div className='h-[48px]' />
+              <div className='text-neutral-500 flex flex-col gap-2 items-center'>
+                <div>
+                  <button
+                    className='text-blue-600 hover:text-blue-700 transition-colors'
+                    onClick={() => signIn()}
+                  >
+                    Sign in to save favorites
+                  </button>
+                </div>
+                <span>or</span>
+                <SearchForYourStation />
               </div>
-            )}
-            <div className='w-full md:w-3/4 md:justify-center md:max-w-sm'>
-              <div className='flex gap-4 justify-between items-center mb-4'>
-                <h1 className='text-3xl font-bold'>All</h1>
-                <input
-                  type='text'
-                  className='bg-gray-100 px-2 py-1 rounded border border-gray-300 min-w-0'
-                  value={searchQuery}
-                  placeholder='Search'
-                  onChange={(event) =>
-                    setSearchQuery(event.currentTarget.value)
-                  }
-                />
-              </div>
-              <Stations stations={filteredStations ?? []} />
+            </>
+          )}
+          {session.data && !favoriteStations && <Spinner />}
+          {session.data && favoriteStations && (
+            <div className='w-full max-w-md flex-1 flex flex-col'>
+              <h1 className='text-3xl font-bold mb-4'>Favorites</h1>
+              <Stations stations={favoriteStations} />
+              {favoriteStations.length === 0 && (
+                <div className='flex-1 flex items-center justify-center'>
+                  <SearchForYourStation />
+                </div>
+              )}
             </div>
-          </main>
-        )}
+          )}
+          <footer className='p-4 text-neutral-400 text-xs'>
+            <a
+              href='https://github.com/DerYeger/wiener-time'
+              target='_blank'
+              rel='noreferrer'
+              className='flex gap-1 items-center hover:text-neutral-600 transition-colors'
+            >
+              An open-source project
+              <Icon icon='ic:round-open-in-new' />
+            </a>
+          </footer>
+        </main>
         <Nav />
       </div>
     </>
