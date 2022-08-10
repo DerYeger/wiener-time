@@ -1,5 +1,4 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
-import Head from 'next/head'
 import { useState, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Stations } from '..'
@@ -44,14 +43,6 @@ const SearchPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <Head>
-        <title>WienerTime</title>
-        <meta
-          name='description'
-          content='Real-time traffic data of Wiener Linien monitors.'
-        />
-        <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
-      </Head>
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
         {!mappedStations && <Spinner />}

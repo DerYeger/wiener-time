@@ -1,19 +1,12 @@
 import { NextPage } from 'next'
-import Head from 'next/head'
+import { NextSeo } from 'next-seo'
 import Header from '../components/Header'
 import Nav from '../components/Nav'
 
 const AboutPage: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>About — WienerTime</title>
-        <meta
-          name='description'
-          content='Real-time traffic data of Wiener Linien monitors.'
-        />
-        <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
-      </Head>
+      <NextSeo title='Impressum' />
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 gap-8 md:gap-16'>

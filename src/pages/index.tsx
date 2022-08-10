@@ -1,5 +1,4 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
-import Head from 'next/head'
 import { trpc } from '../utils/trpc'
 import { FC, useMemo, useRef } from 'react'
 import Link from 'next/link'
@@ -94,14 +93,6 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <Head>
-        <title>WienerTime</title>
-        <meta
-          name='description'
-          content='Real-time traffic data of Wiener Linien monitors.'
-        />
-        <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
-      </Head>
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col px-4 mt-4 items-center justify-between'>

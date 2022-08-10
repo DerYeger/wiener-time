@@ -4,6 +4,12 @@
    <img src="public/favicon.svg" alt="Logo" width="128px" height="128px">
 <p>
 
+<p align="center">
+  <a href="https://wiener-time.vercel.app" target="_blank" rel="noreferrer">
+    wiener-time.vercel.app
+  </a>
+<p>
+
 > Real-time traffic data of Wiener Linien monitors.
 
 ## Features
@@ -31,17 +37,21 @@ For local development, the following environment variables have to be added to a
 
 #### Prisma
 
-- DATABASE_URL
+- `DATABASE_URL`
 
 #### Next Auth
 
-- NEXTAUTH_SECRET
-- NEXTAUTH_URL=http://localhost:3000
+- `NEXTAUTH_SECRET`
+- `NEXTAUTH_URL=http://localhost:3000`
 
 #### Next Auth Discord Provider
 
-- DISCORD_CLIENT_ID
-- DISCORD_CLIENT_SECRET
+- `DISCORD_CLIENT_ID`
+- `DISCORD_CLIENT_SECRET`
+
+#### OpenGraph
+
+- `NEXT_PUBLIC_OG_URL=http://localhost:3000`
 
 ## License
 

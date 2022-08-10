@@ -8,12 +8,12 @@ import { Departure, Line, Monitor } from '../../model'
 import { appRouter } from '../../server/trpc/router'
 import { trpc } from '../../utils/trpc'
 import superjson from 'superjson'
-import Head from 'next/head'
 import Header from '../../components/Header'
 import { createContext } from '../../server/trpc/context'
 import lineClasses from '../../lineClasses.json'
 import Nav from '../../components/Nav'
 import lib from '../../lib'
+import { NextSeo } from 'next-seo'
 
 export const getServerSideProps: GetServerSideProps<{
   stationName: string
@@ -165,23 +165,18 @@ const StationPage: NextPage<
   })
 
   const error = stationError?.message || monitorError?.message
-  const pageTitle = `${stationName} — WienerTime`
   return (
     <>
-      <Head>
-        <title>{pageTitle}</title>
-        <meta
-          name='description'
-          content='Real-time traffic data of Wiener Linien monitors.'
-        />
-        <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
-      </Head>
+      <NextSeo title={stationName} />
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col '>
           <div className='flex items-center justify-between m-4 mb-2'>
             <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
-            <FavoriteToggle stationName={stationName} isFavorite={station && isFavorite} />
+            <FavoriteToggle
+              stationName={stationName}
+              isFavorite={station && isFavorite}
+            />
           </div>
           <div
             className={`flex flex-1 justify-center m-2 ${
