@@ -10,6 +10,10 @@ const Nav: FC = () => {
       href: '/',
       icon: 'fa:home',
     },
+    {
+      href: '/about',
+      icon: 'fa:info',
+    },
   ]
   return (
     <nav className='bg-gray-100 border-t-gray-200 border-t-2 fixed left-0 right-0 bottom-0 flex justify-evenly'>
@@ -19,7 +23,7 @@ const Nav: FC = () => {
             <Icon
               icon={icon}
               className={
-                router.pathname !== '/' ? 'text-black' : 'text-gray-500'
+                router.pathname !== href ? 'text-black' : 'text-gray-500'
               }
             />
           </a>

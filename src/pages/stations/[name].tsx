@@ -165,7 +165,7 @@ const StationPage: NextPage<
   })
 
   const error = stationError?.message || monitorError?.message
-  const pageTitle = `${stationName} - WienerTime`
+  const pageTitle = `${stationName} — WienerTime`
   return (
     <>
       <Head>
