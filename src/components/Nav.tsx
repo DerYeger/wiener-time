@@ -23,13 +23,12 @@ const Nav: FC = () => {
     <nav className='bg-gray-100 border-t-gray-200 border-t-2 fixed left-0 right-0 bottom-0 flex justify-evenly'>
       {targets.map(({ href, icon }) => (
         <Link href={href} passHref key={href}>
-          <a className='p-4'>
-            <Icon
-              icon={icon}
-              className={
-                router.pathname !== href ? 'text-black' : 'text-gray-500'
-              }
-            />
+          <a
+            className={`${
+              router.pathname === href ? 'text-gray-700' : 'text-gray-500'
+            } hover:text-blue-600 transition-colors p-4`}
+          >
+            <Icon icon={icon} />
           </a>
         </Link>
       ))}

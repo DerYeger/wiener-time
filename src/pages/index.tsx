@@ -45,7 +45,9 @@ export const Station: FC<{
   return (
     <div className='flex gap-2 items-center justify-between'>
       <Link href={`/stations/${lib.encodeStationName(station.name)}`} passHref>
-        <a>{station.name}</a>
+        <a className='text-neutral-700 hover:text-black transition-colors'>
+          {station.name}
+        </a>
       </Link>
       <FavoriteToggle
         stationName={station.name}
