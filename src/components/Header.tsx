@@ -11,8 +11,8 @@ const Header: FC = () => {
       {session.data && (
         <div className='w-full flex items-center justify-between'>
           <Image
-            src={session.data.user?.image ?? ''}
-            alt={session.data.user?.name ?? ''}
+            src={session.data.user?.image ?? '/favicon.svg'}
+            alt={session.data.user?.name ?? 'WienerTime'}
             width={48}
             height={48}
             className='rounded-lg'
@@ -28,7 +28,7 @@ const Header: FC = () => {
       )}
       {!session.data && (
         <div className='w-full flex items-center justify-between h-12'>
-          <h1 className='text-3xl font-light'>WienerTime</h1>
+          <Image src='/favicon.svg' alt='WienerTime' width={48} height={48} />
           <button
             title='Login'
             onClick={() => signIn()}
