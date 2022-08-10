@@ -2,12 +2,12 @@ import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import Head from 'next/head'
 import { useState, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
-import { Stations } from '.'
-import Header from '../components/Header'
-import Nav from '../components/Nav'
-import Spinner from '../components/Spinner'
-import { trpc } from '../utils/trpc'
-import lib from '../lib'
+import { Stations } from '..'
+import Header from '../../components/Header'
+import Nav from '../../components/Nav'
+import Spinner from '../../components/Spinner'
+import { trpc } from '../../utils/trpc'
+import lib from '../../lib'
 
 export const getStaticProps: GetStaticProps<{
   stations: { name: string; stops: number[] }[]

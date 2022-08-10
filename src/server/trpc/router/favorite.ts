@@ -25,10 +25,10 @@ export const favoriteRouter = t.router({
       ).map((favorite) => favorite.name),
     ])
   }),
-  getByStationName: authedProcedure
+  getByStationName: t.procedure
     .input(z.object({ stationName: z.string() }))
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id
+      const userId = ctx.session?.user?.id
       if (!userId) {
         return undefined
       }

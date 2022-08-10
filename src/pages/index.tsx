@@ -66,10 +66,10 @@ export const Stations: FC<{
 
 const SearchForYourStation: FC = () => {
   return (
-    <Link href='/search' passHref>
+    <Link href='/stations' passHref>
       <a className='text-neutral-600 hover:text-black transition-colors flex gap-2 items-center justify-center'>
         <Icon icon='fa:train' />
-        Search for your station
+        See all stations
         <Icon icon='fa:bus' />
       </a>
     </Link>
@@ -114,7 +114,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                     className='text-blue-600 hover:text-blue-700 transition-colors'
                     onClick={() => signIn()}
                   >
-                    Sign in to save favorites
+                    Sign in
                   </button>
                 </div>
                 <span>or</span>

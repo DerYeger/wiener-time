@@ -7,7 +7,7 @@ const Nav: FC = () => {
   const router = useRouter()
   const targets = [
     {
-      href: '/search',
+      href: '/stations',
       icon: 'fa:search',
     },
     {
