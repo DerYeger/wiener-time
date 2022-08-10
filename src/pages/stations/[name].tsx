@@ -26,7 +26,16 @@ export const getServerSideProps: GetServerSideProps<{
     transformer: superjson,
   })
 
-  await ssg.fetchQuery('station.getByName', { stationName })
+  try {
+    await ssg.fetchQuery('station.getByName', { stationName })
+  } catch (error) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: '/',
+      },
+    }
+  }
 
   return {
     props: {
