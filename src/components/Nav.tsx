@@ -26,7 +26,7 @@ const Nav: FC = () => {
           <a
             className={`${
               router.pathname === href ? 'text-gray-700' : 'text-gray-500'
-            } hover:text-blue-600 transition-colors p-4`}
+            } hover:text-black transition-colors p-4`}
           >
             <Icon icon={icon} />
           </a>
