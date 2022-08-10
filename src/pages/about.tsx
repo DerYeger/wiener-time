@@ -12,7 +12,7 @@ const AboutPage: NextPage = () => {
           name='description'
           content='Real-time traffic data of Wiener Linien monitors.'
         />
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
       </Head>
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />

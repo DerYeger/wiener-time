@@ -174,11 +174,11 @@ const StationPage: NextPage<
           name='description'
           content='Real-time traffic data of Wiener Linien monitors.'
         />
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
       </Head>
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
-        <main className='flex-1 flex flex-col'>
+        <main className='flex-1 flex flex-col '>
           <div className='flex items-center justify-between m-4 mb-2'>
             <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
             <FavoriteToggle stationName={stationName} isFavorite={isFavorite} />

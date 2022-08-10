@@ -1,5 +1,9 @@
 # WienerTime
 
+<p align="center">
+   <img src="public/favicon.svg" alt="Logo" width="128px" height="128px">
+<p>
+
 > Real-time traffic data of Wiener Linien monitors.
 
 ## Features
