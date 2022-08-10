@@ -51,13 +51,6 @@ const fetchAllStations = async () => {
   }))
 }
 
-const mapStopsToStations = (stops: Record<string, StaticStopData[]>) => {
-  return Object.entries(stops).map(([name, stops]) => ({
-    name,
-    stops: stops.map((stop) => stop.StopID),
-  }))
-}
-
 const API_URL = 'https://www.wienerlinien.at'
 
 const fetchMonitorData = async (stopIds: number[]) => {
@@ -83,7 +76,6 @@ const lib = {
   fetchMonitorData,
   fetchAllStations,
   fetchStationByName,
-  mapStopsToStations,
 }
 
 export default lib

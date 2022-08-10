@@ -8,7 +8,7 @@ export const stationRouter = t.router({
     .input(z.object({ stationName: z.string() }))
     .query(async ({ input }) => {
       const station = await lib.fetchStationByName(input.stationName)
-      if (!station) {
+      if (station.stops.length === 0) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Unknown Station' })
       }
       return station
