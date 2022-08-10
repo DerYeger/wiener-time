@@ -3,8 +3,8 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 
 export const favoriteRouter = t.router({
-  getAll: authedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.session.user.id
+  getAll: t.procedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user?.id
     if (!userId) {
       return undefined
     }

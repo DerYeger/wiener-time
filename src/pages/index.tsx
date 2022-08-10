@@ -25,6 +25,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   await ssg.fetchQuery('station.getAll')
 
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  )
+
   return {
     props: {
       trpcState: ssg.dehydrate(),

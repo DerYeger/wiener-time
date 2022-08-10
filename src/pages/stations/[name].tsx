@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react'
 import { createSSGHelpers } from '@trpc/react/ssg'
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
-import { useRouter } from 'next/router'
 import { FC, useMemo } from 'react'
 import FavoriteToggle from '../../components/FavoriteToggle'
 import Spinner from '../../components/Spinner'
@@ -27,8 +26,16 @@ export const getServerSideProps: GetServerSideProps<{
   })
 
   try {
-    await ssg.fetchQuery('station.getByName', { stationName })
+    const station = await ssg.fetchQuery('station.getByName', { stationName })
+    await ssg.prefetchQuery('monitor.getAllByStopIds', {
+      stopIds: station.stops,
+    })
   } catch (error) {}
+
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  )
 
   return {
     props: {
