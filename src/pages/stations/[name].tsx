@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import { createSSGHelpers } from '@trpc/react/ssg'
-import { GetServerSideProps, NextPage } from 'next'
+import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { FC, useMemo } from 'react'
 import FavoriteToggle from '../../components/FavoriteToggle'
@@ -14,13 +14,12 @@ import Header from '../../components/Header'
 import { createContext } from '../../server/trpc/context'
 import lineClasses from '../../lineClasses.json'
 import Nav from '../../components/Nav'
+import lib from '../../lib'
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  res,
-  query,
-}) => {
-  const stationName = query.name as string
+export const getServerSideProps: GetServerSideProps<{
+  stationName: string
+}> = async ({ req, res, query }) => {
+  const stationName = lib.decodeStationName(query.name as string)
   const ssg = createSSGHelpers({
     router: appRouter,
     ctx: await createContext({ req, res } as any),
@@ -31,6 +30,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   return {
     props: {
+      stationName,
       trpcState: ssg.dehydrate(),
     },
   }
@@ -132,9 +132,9 @@ const MonitorComponent: FC<{ monitor: Monitor }> = ({ monitor }) => {
   )
 }
 
-const StationPage: NextPage = () => {
-  const router = useRouter()
-  const stationName = router.query.name as string
+const StationPage: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ stationName }) => {
   const { data: station } = trpc.proxy.station.getByName.useQuery({
     stationName,
   })

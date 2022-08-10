@@ -14,6 +14,7 @@ import ViewportList from 'react-viewport-list'
 import { createContext } from '../server/trpc/context'
 import Nav from '../components/Nav'
 import Spinner from '../components/Spinner'
+import lib from '../lib'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const ssg = createSSGHelpers({
@@ -36,7 +37,7 @@ const Station: FC<{
 }> = ({ station }) => {
   return (
     <div className='flex gap-2 items-center justify-between'>
-      <Link href={`/stations/${station.name}`} passHref>
+      <Link href={`/stations/${lib.encodeStationName(station.name)}`} passHref>
         <a>{station.name}</a>
       </Link>
       <FavoriteToggle

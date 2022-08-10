@@ -55,9 +55,14 @@ const fetchMonitorData = async (stopIds: number[]) => {
   return monitorResponse.data.monitors
 }
 
+const encodeStationName = (name: string) => name.replaceAll('/', '-:-')
+const decodeStationName = (name: string) => name.replace('-:-', '/')
+
 const lib = {
-  fetchStaticStopData,
+  encodeStationName,
+  decodeStationName,
   fetchMonitorData,
+  fetchStaticStopData,
 }
 
 export default lib
