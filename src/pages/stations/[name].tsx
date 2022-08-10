@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<{
 
   res.setHeader(
     'Cache-Control',
-    'public, max-age=86400, stale-while-revalidate=59'
+    'public, max-age=59, stale-while-revalidate=59'
   )
 
   return {

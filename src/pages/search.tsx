@@ -1,8 +1,4 @@
-import { createSSGHelpers } from '@trpc/react/ssg'
-import { GetServerSideProps, NextPage } from 'next'
-import superjson from 'superjson'
-import { appRouter } from '../server/trpc/router'
-import { createContext } from '../server/trpc/context'
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import Head from 'next/head'
 import { useState, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -11,36 +7,29 @@ import Header from '../components/Header'
 import Nav from '../components/Nav'
 import Spinner from '../components/Spinner'
 import { trpc } from '../utils/trpc'
+import lib from '../lib'
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const ssg = createSSGHelpers({
-    router: appRouter,
-    ctx: await createContext({ req, res } as any),
-    transformer: superjson,
-  })
-
-  await ssg.fetchQuery('station.getAll')
-
-  res.setHeader(
-    'Cache-Control',
-    'public, max-age=86400, stale-while-revalidate=59'
-  )
-
+export const getStaticProps: GetStaticProps<{
+  stations: { name: string; stops: number[] }[]
+}> = async () => {
+  const stations = await lib.fetchAllStations()
   return {
     props: {
-      trpcState: ssg.dehydrate(),
+      stations,
     },
+    revalidate: 86400,
   }
 }
 
-const SearchPage: NextPage = () => {
-  const { data: stations } = trpc.proxy.station.getAll.useQuery()
+const SearchPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  stations,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300)
   const { data: favorites } = trpc.proxy.favorite.getAll.useQuery()
   const mappedStations = useMemo(
     () =>
-      stations?.map((station) => ({
+      stations.map((station) => ({
         ...station,
         isFavorite: favorites?.has(station.name),
       })),

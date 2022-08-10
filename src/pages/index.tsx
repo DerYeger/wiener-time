@@ -1,39 +1,26 @@
-import { createSSGHelpers } from '@trpc/react/ssg'
-import type { GetServerSideProps, NextPage } from 'next'
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import Head from 'next/head'
 import { trpc } from '../utils/trpc'
 import { FC, useMemo, useRef } from 'react'
 import Link from 'next/link'
-import { appRouter } from '../server/trpc/router'
-import superjson from 'superjson'
 import FavoriteToggle from '../components/FavoriteToggle'
 import Header from '../components/Header'
 import { signIn, useSession } from 'next-auth/react'
 import ViewportList from 'react-viewport-list'
-import { createContext } from '../server/trpc/context'
 import Nav from '../components/Nav'
 import Spinner from '../components/Spinner'
 import lib from '../lib'
 import { Icon } from '@iconify/react'
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const ssg = createSSGHelpers({
-    router: appRouter,
-    ctx: await createContext({ req, res } as any),
-    transformer: superjson,
-  })
-
-  await ssg.fetchQuery('station.getAll')
-
-  res.setHeader(
-    'Cache-Control',
-    'public, max-age=86400, stale-while-revalidate=59'
-  )
-
+export const getStaticProps: GetStaticProps<{
+  stations: { name: string; stops: number[] }[]
+}> = async () => {
+  const stations = await lib.fetchAllStations()
   return {
     props: {
-      trpcState: ssg.dehydrate(),
+      stations,
     },
+    revalidate: 86400,
   }
 }
 
@@ -89,9 +76,10 @@ const SearchForYourStation: FC = () => {
   )
 }
 
-const Home: NextPage = () => {
+const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  stations,
+}) => {
   const session = useSession()
-  const { data: stations } = trpc.proxy.station.getAll.useQuery()
   const { data: favorites } = trpc.proxy.favorite.getAll.useQuery()
   const favoriteStations = useMemo(
     () =>

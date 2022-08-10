@@ -6,12 +6,7 @@ import {
   StaticStopDataSchema,
 } from './model'
 
-let staticStopData: Record<string, StaticStopData[]> | undefined
-
-const fetchStaticStopData = async () => {
-  if (staticStopData) {
-    return staticStopData
-  }
+const fetchStaticStopData = async (): Promise<StaticStopData[]> => {
   const res = await fetch(
     'https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-ogd-haltepunkte.csv'
   )
@@ -22,21 +17,45 @@ const fetchStaticStopData = async () => {
     ignoreEmpty: true,
   }).fromString(body)
 
-  const result = z
+  const data = z
     .array(StaticStopDataSchema)
     .parse(json)
     .filter(
       (stop) => stop.StopText && stop.Latitude && stop.Longitude && stop.DIVA
     )
-  const stationMap = new Map<string, StaticStopData[]>()
-  result.forEach((stop) => {
-    stationMap?.set(stop.StopText!, [
-      ...(stationMap?.get(stop.StopText!) ?? []),
+  return data
+}
+
+const fetchStationByName = async (name: string) => {
+  const stops = await fetchStaticStopData()
+  return {
+    name,
+    stops: stops
+      .filter((stop) => stop.StopText === name)
+      .map((stop) => stop.StopID),
+  }
+}
+
+const fetchAllStations = async () => {
+  const stops = await fetchStaticStopData()
+  const stations = new Map<string, StaticStopData[]>()
+  stops.forEach((stop) => {
+    stations?.set(stop.StopText!, [
+      ...(stations?.get(stop.StopText!) ?? []),
       stop,
     ])
   })
-  staticStopData = Object.fromEntries(new Map([...stationMap.entries()].sort()))
-  return staticStopData
+  return [...stations.entries()].sort().map(([name, stops]) => ({
+    name,
+    stops: stops.map((stop) => stop.StopID),
+  }))
+}
+
+const mapStopsToStations = (stops: Record<string, StaticStopData[]>) => {
+  return Object.entries(stops).map(([name, stops]) => ({
+    name,
+    stops: stops.map((stop) => stop.StopID),
+  }))
 }
 
 const API_URL = 'https://www.wienerlinien.at'
@@ -62,7 +81,9 @@ const lib = {
   encodeStationName,
   decodeStationName,
   fetchMonitorData,
-  fetchStaticStopData,
+  fetchAllStations,
+  fetchStationByName,
+  mapStopsToStations,
 }
 
 export default lib
