@@ -28,14 +28,7 @@ export const getServerSideProps: GetServerSideProps<{
 
   try {
     await ssg.fetchQuery('station.getByName', { stationName })
-  } catch (error) {
-    return {
-      redirect: {
-        permanent: true,
-        destination: '/',
-      },
-    }
-  }
+  } catch (error) {}
 
   return {
     props: {
@@ -144,23 +137,32 @@ const MonitorComponent: FC<{ monitor: Monitor }> = ({ monitor }) => {
 const StationPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ stationName }) => {
-  const { data: station } = trpc.proxy.station.getByName.useQuery({
-    stationName,
-  })
+  const { data: station, error: stationError } =
+    trpc.proxy.station.getByName.useQuery(
+      {
+        stationName,
+      },
+      { retry: 2 }
+    )
 
-  const { data: monitors } = trpc.proxy.monitor.getAllByStopIds.useQuery(
-    { stopIds: station?.stops ?? [] },
-    {
-      refetchInterval: 30 * 1000,
-    }
-  )
+  const { data: monitors, error: monitorError } =
+    trpc.proxy.monitor.getAllByStopIds.useQuery(
+      { stopIds: station?.stops ?? [] },
+      {
+        refetchInterval: 30 * 1000,
+        retry: 2,
+      }
+    )
   const { data: isFavorite } = trpc.proxy.favorite.getByStationName.useQuery({
     stationName,
   })
+
+  const error = stationError?.message || monitorError?.message
+  const pageTitle = `${stationName} - WienerTime`
   return (
     <>
       <Head>
-        <title>{stationName} - WienerTime</title>
+        <title>{pageTitle}</title>
         <meta
           name='description'
           content='Real-time traffic data of Wiener Linien monitors.'
@@ -179,7 +181,12 @@ const StationPage: NextPage<
               monitors && monitors.length > 0 ? 'flex-wrap content-start' : ''
             }`}
           >
-            {!monitors && <Spinner />}
+            {!monitors && !error && <Spinner />}
+            {!monitors && error && (
+              <div className='flex-1 flex items-center justify-center'>
+                {error}
+              </div>
+            )}
             {monitors?.length === 0 && (
               <div className='flex-1 flex items-center justify-center'>
                 No data available :(
