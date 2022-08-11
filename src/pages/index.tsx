@@ -125,7 +125,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               )}
             </div>
           )}
-          <footer className='p-4 text-neutral-400 text-xs'>
+          <footer className='p-4 text-neutral-400 text-xs sticky bottom-0'>
             <a
               href='https://github.com/DerYeger/wiener-time'
               target='_blank'
