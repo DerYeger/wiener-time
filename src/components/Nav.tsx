@@ -15,8 +15,8 @@ const Nav: FC = () => {
       icon: 'fa:home',
     },
     {
-      href: '/about',
-      icon: 'fa:info',
+      href: '/map',
+      icon: 'fa:map',
     },
   ]
   return (

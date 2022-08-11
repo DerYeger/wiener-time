@@ -36,6 +36,21 @@ const fetchStationByName = async (name: string) => {
   }
 }
 
+const calculateCenter = (
+  locations: [number, number][] | undefined
+): [number, number] | undefined => {
+  if (!locations || locations.length === 0) {
+    return undefined
+  }
+  const [totalX, totalY] = locations.reduce<[number, number]>(
+    ([accX, accY], [locX, locY]) => {
+      return [accX + locX, accY + locY]
+    },
+    [0, 0]
+  )
+  return [totalX / locations.length, totalY / locations.length]
+}
+
 const fetchAllStations = async () => {
   const stops = await fetchStaticStopData()
   const stations = new Map<string, StaticStopData[]>()
@@ -48,6 +63,11 @@ const fetchAllStations = async () => {
   return [...stations.entries()].sort().map(([name, stops]) => ({
     name,
     stops: stops.map((stop) => stop.StopID),
+    location: calculateCenter(
+      stops
+        .filter((stop) => stop.Latitude && stop.Longitude)
+        .map((stop) => [stop.Longitude!, stop.Latitude!])
+    ),
   }))
 }
 
@@ -70,9 +90,13 @@ const fetchMonitorData = async (stopIds: number[]) => {
 const encodeStationName = (name: string) => name.replaceAll('/', '-:-')
 const decodeStationName = (name: string) => name.replace('-:-', '/')
 
+const centerOfVienna: [number, number] = [48.2082, 16.3738]
+
 const lib = {
-  encodeStationName,
+  calculateCenter,
+  centerOfVienna,
   decodeStationName,
+  encodeStationName,
   fetchMonitorData,
   fetchAllStations,
   fetchStationByName,

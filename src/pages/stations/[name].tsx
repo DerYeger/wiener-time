@@ -14,6 +14,8 @@ import lineClasses from '../../lineClasses.json'
 import Nav from '../../components/Nav'
 import lib from '../../lib'
 import { NextSeo } from 'next-seo'
+import LazyMap, { LazyMarker } from '../../components/Map.lazy'
+import { Marker } from 'react-leaflet'
 
 export const getServerSideProps: GetServerSideProps<{
   stationName: string
@@ -131,7 +133,7 @@ const LineComponent: FC<{ line: Line; maxDepartures?: number }> = ({
 
 const MonitorComponent: FC<{ monitor: Monitor }> = ({ monitor }) => {
   return (
-    <div className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4'>
+    <div className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 md:max-w-md'>
       <div className='flex flex-col m-2'>
         {monitor.lines.map((line) => (
           <LineComponent line={line} key={line.lineId} />
@@ -165,24 +167,42 @@ const StationPage: NextPage<
   })
 
   const error = stationError?.message || monitorError?.message
+
+  const markers = useMemo<[number, number][] | undefined>(
+    () =>
+      monitors?.map(({ locationStop }) => [
+        locationStop.geometry.coordinates[1]!,
+        locationStop.geometry.coordinates[0]!,
+      ]),
+    [monitors]
+  )
+  const mapCenter = useMemo<[number, number]>(() => {
+    if (!markers || markers.length === 0) {
+      return lib.centerOfVienna
+    }
+    const [totalX, totalY] = markers.reduce<[number, number]>(
+      ([accX, accY], [markerX, markerY]) => {
+        return [accX + markerX, accY + markerY]
+      },
+      [0, 0]
+    )
+    return [totalX / markers.length, totalY / markers.length]
+  }, [markers])
+
   return (
     <>
       <NextSeo title={stationName} />
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col '>
-          <div className='flex items-center justify-between m-4 mb-2'>
+          <div className='flex items-center justify-between m-4'>
             <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
             <FavoriteToggle
               stationName={stationName}
               isFavorite={station && isFavorite}
             />
           </div>
-          <div
-            className={`flex flex-1 justify-center m-2 ${
-              monitors && monitors.length > 0 ? 'flex-wrap content-start' : ''
-            }`}
-          >
+          <div className='flex flex-1 flex-col items-center'>
             {!monitors && !error && <Spinner />}
             {!monitors && error && (
               <div className='flex-1 flex items-center justify-center'>
@@ -194,9 +214,30 @@ const StationPage: NextPage<
                 No data available :(
               </div>
             )}
-            {monitors?.map((monitor, index) => (
-              <MonitorComponent key={index} monitor={monitor} />
-            ))}
+            {monitors && monitors.length >= 1 && (
+              <div className='w-full h-[200px]'>
+                <LazyMap
+                  markers={markers ?? []}
+                  center={mapCenter}
+                  zoom={16}
+                  zoomControl={false}
+                  touchZoom={false}
+                  scrollWheelZoom={false}
+                  doubleClickZoom={false}
+                  markerZoomAnimation={false}
+                  dragging={false}
+                >
+                  {markers?.map((marker, index) => (
+                    <LazyMarker position={marker} key={index} />
+                  ))}
+                </LazyMap>
+              </div>
+            )}
+            <div className='container my-2 px-2 flex flex-1 flex-wrap content-start justify-center'>
+              {monitors?.map((monitor, index) => (
+                <MonitorComponent key={index} monitor={monitor} />
+              ))}
+            </div>
           </div>
         </main>
         <Nav />
