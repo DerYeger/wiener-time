@@ -10,7 +10,7 @@ L.Marker.prototype.options.icon = L.icon({
   shadowUrl: '/leaflet-images/marker-shadow.png',
   shadowRetinaUrl: '/leaflet-images/marker-shadow.png',
   shadowSize: [41, 41],
-  shadowAnchor: [15, 41],
+  shadowAnchor: [12, 41],
 })
 
 const Map: FC<
@@ -21,7 +21,17 @@ const Map: FC<
     MapOptions
 > = ({ children, ...rest }) => {
   return (
-    <MapContainer className='h-full flex-1' maxZoom={20} {...rest}>
+    <MapContainer
+      className='h-full flex-1'
+      minZoom={11}
+      maxZoom={20}
+      // bounds={[
+      //   [48.117668, 16.18218],
+      //   [48.322571, 16.566511],
+      // ]}
+      boundsOptions={{}}
+      {...rest}
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'

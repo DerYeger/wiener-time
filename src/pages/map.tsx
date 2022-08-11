@@ -38,7 +38,7 @@ const MapPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           <div className='flex-1 w-full flex flex-col'>
             <LazyMap
               center={lib.centerOfVienna}
-              zoom={14}
+              zoom={10}
               zoomControl={false}
               doubleClickZoom={false}
               markerZoomAnimation={false}

@@ -33,6 +33,7 @@ export const getServerSideProps: GetServerSideProps<{
       notFound: true,
     }
   }
+  await ssg.prefetchQuery('monitor.getAllByStopIds', { stopIds: station.stops })
 
   res.setHeader(
     'Cache-Control',
@@ -205,7 +206,7 @@ const StationPage: NextPage<
               </div>
             )}
             {monitors && monitors.length >= 1 && (
-              <div className='w-full h-[200px]'>
+              <div className='w-full h-[200px] bg-[#F6EFE4]'>
                 <LazyMap
                   center={mapCenter}
                   zoom={16}
