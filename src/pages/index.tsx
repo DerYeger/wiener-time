@@ -10,14 +10,14 @@ import Nav from '../components/Nav'
 import Spinner from '../components/Spinner'
 import lib from '../lib'
 import { Icon } from '@iconify/react'
+import stations from '../stations'
 
 export const getStaticProps: GetStaticProps<{
   stations: { name: string; stops: number[] }[]
 }> = async () => {
-  const stations = await lib.fetchAllStations()
   return {
     props: {
-      stations,
+      stations: stations.getAll(),
     },
     revalidate: 86400,
   }

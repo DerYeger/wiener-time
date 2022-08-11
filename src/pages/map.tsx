@@ -5,14 +5,14 @@ import Nav from '../components/Nav'
 import lib from '../lib'
 import LazyMap, { LazyMarker, LazyMarkerCluster } from '../components/Map.lazy'
 import { useRouter } from 'next/router'
+import stations from '../stations'
 
 export const getStaticProps: GetStaticProps<{
   stations: { name: string; stops: number[]; location?: [number, number] }[]
 }> = async () => {
-  const stations = await lib.fetchAllStations()
   return {
     props: {
-      stations,
+      stations: stations.getAll(),
     },
     revalidate: 86400,
   }

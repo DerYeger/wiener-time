@@ -5,16 +5,15 @@ import { Stations } from '..'
 import Header from '../../components/Header'
 import Nav from '../../components/Nav'
 import Spinner from '../../components/Spinner'
+import stations from '../../stations'
 import { trpc } from '../../utils/trpc'
-import lib from '../../lib'
 
 export const getStaticProps: GetStaticProps<{
   stations: { name: string; stops: number[] }[]
 }> = async () => {
-  const stations = await lib.fetchAllStations()
   return {
     props: {
-      stations,
+      stations: stations.getAll(),
     },
     revalidate: 86400,
   }

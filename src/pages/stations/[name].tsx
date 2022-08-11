@@ -15,10 +15,10 @@ import Nav from '../../components/Nav'
 import lib from '../../lib'
 import { NextSeo } from 'next-seo'
 import LazyMap, { LazyMarker } from '../../components/Map.lazy'
-import { Marker } from 'react-leaflet'
+import stations, { Station } from '../../stations'
 
 export const getServerSideProps: GetServerSideProps<{
-  stationName: string
+  station: Station
 }> = async ({ req, res, query }) => {
   const stationName = lib.decodeStationName(query.name as string)
   const ssg = createSSGHelpers({
@@ -27,12 +27,12 @@ export const getServerSideProps: GetServerSideProps<{
     transformer: superjson,
   })
 
-  try {
-    const station = await ssg.fetchQuery('station.getByName', { stationName })
-    await ssg.prefetchQuery('monitor.getAllByStopIds', {
-      stopIds: station.stops,
-    })
-  } catch (error) {}
+  const station = stations.getByName(stationName)
+  if (!station) {
+    return {
+      notFound: true,
+    }
+  }
 
   res.setHeader(
     'Cache-Control',
@@ -41,7 +41,7 @@ export const getServerSideProps: GetServerSideProps<{
 
   return {
     props: {
-      stationName,
+      station,
       trpcState: ssg.dehydrate(),
     },
   }
@@ -145,15 +145,7 @@ const MonitorComponent: FC<{ monitor: Monitor }> = ({ monitor }) => {
 
 const StationPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ stationName }) => {
-  const { data: station, error: stationError } =
-    trpc.proxy.station.getByName.useQuery(
-      {
-        stationName,
-      },
-      { retry: 2 }
-    )
-
+> = ({ station }) => {
   const { data: monitors, error: monitorError } =
     trpc.proxy.monitor.getAllByStopIds.useQuery(
       { stopIds: station?.stops ?? [] },
@@ -163,10 +155,8 @@ const StationPage: NextPage<
       }
     )
   const { data: isFavorite } = trpc.proxy.favorite.getByStationName.useQuery({
-    stationName,
+    stationName: station.name,
   })
-
-  const error = stationError?.message || monitorError?.message
 
   const markers = useMemo<[number, number][] | undefined>(
     () =>
@@ -191,22 +181,22 @@ const StationPage: NextPage<
 
   return (
     <>
-      <NextSeo title={stationName} />
+      <NextSeo title={station.name} />
       <div className='min-h-screen pb-[50px] flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col '>
           <div className='flex items-center justify-between m-4'>
-            <h1 className='text-3xl sm:text-4xl md:text-5xl'>{stationName}</h1>
+            <h1 className='text-3xl sm:text-4xl md:text-5xl'>{station.name}</h1>
             <FavoriteToggle
-              stationName={stationName}
+              stationName={station.name}
               isFavorite={station && isFavorite}
             />
           </div>
           <div className='flex flex-1 flex-col items-center'>
-            {!monitors && !error && <Spinner />}
-            {!monitors && error && (
+            {!monitors && !monitorError && <Spinner />}
+            {!monitors && monitorError && (
               <div className='flex-1 flex items-center justify-center'>
-                {error}
+                {monitorError.message}
               </div>
             )}
             {monitors?.length === 0 && (
