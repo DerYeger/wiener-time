@@ -171,7 +171,7 @@ const StationPage: NextPage<
   return (
     <>
       <NextSeo title={station.name} />
-      <div className='min-h-screen pb-[50px] flex flex-col'>
+      <div className='min-h-screen flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col '>
           <div className='flex items-center justify-between m-4'>

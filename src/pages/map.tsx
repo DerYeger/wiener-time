@@ -32,7 +32,7 @@ const MapPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <div className='min-h-screen pb-[50px] flex flex-col'>
+      <div className='min-h-screen flex flex-col'>
         <Header />
         <main className='flex-1 flex-basis-full flex flex-col'>
           <div className='flex-1 w-full flex flex-col'>

@@ -42,7 +42,7 @@ const SearchPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <div className='min-h-screen pb-[50px] flex flex-col'>
+      <div className='min-h-screen flex flex-col'>
         <Header />
         {!mappedStations && <Spinner />}
         {mappedStations && (
