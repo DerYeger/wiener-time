@@ -25,10 +25,10 @@ const Map: FC<
       className='h-full flex-1'
       minZoom={11}
       maxZoom={20}
-      // bounds={[
-      //   [48.117668, 16.18218],
-      //   [48.322571, 16.566511],
-      // ]}
+      maxBounds={[
+        [48.117668, 16.18218],
+        [48.322571, 16.566511],
+      ]}
       boundsOptions={{}}
       {...rest}
     >
