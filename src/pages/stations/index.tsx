@@ -64,8 +64,8 @@ const SearchPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             </div>
           </main>
         )}
-        <Nav />
       </div>
+      <Nav />
     </>
   )
 }

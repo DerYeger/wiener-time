@@ -117,8 +117,8 @@ const AboutPage: NextPage = () => {
             </div>
           </section>
         </main>
-        <Nav />
       </div>
+      <Nav />
     </>
   )
 }

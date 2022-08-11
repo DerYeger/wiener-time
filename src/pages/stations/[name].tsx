@@ -222,8 +222,8 @@ const StationPage: NextPage<
             </div>
           </div>
         </main>
-        <Nav />
       </div>
+      <Nav />
     </>
   )
 }

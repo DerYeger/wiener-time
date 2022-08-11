@@ -137,8 +137,8 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             </a>
           </footer>
         </main>
-        <Nav />
       </div>
+      <Nav />
     </>
   )
 }
