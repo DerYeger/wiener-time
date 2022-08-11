@@ -32,35 +32,33 @@ const MapPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <div className='min-h-screen flex flex-col'>
+      <div className='min-h-[calc(100vh-50px)] flex flex-col'>
         <Header />
-        <main className='flex-1 flex-basis-full flex flex-col'>
-          <div className='flex-1 w-full flex flex-col'>
-            <LazyMap
-              center={lib.centerOfVienna}
-              zoom={10}
-              zoomControl={false}
-              doubleClickZoom={false}
-              markerZoomAnimation={false}
-            >
-              <LazyMarkerCluster>
-                {markers?.map(({ name, location }) => (
-                  <LazyMarker
-                    position={location}
-                    title={name}
-                    key={name}
-                    eventHandlers={{
-                      click: () =>
-                        router.push(`/stations/${lib.encodeStationName(name)}`),
-                    }}
-                  />
-                ))}
-              </LazyMarkerCluster>
-            </LazyMap>
-          </div>
+        <main className='flex-1 flex flex-col'>
+          <LazyMap
+            center={lib.centerOfVienna}
+            zoom={10}
+            zoomControl={false}
+            doubleClickZoom={false}
+            markerZoomAnimation={false}
+          >
+            <LazyMarkerCluster>
+              {markers?.map(({ name, location }) => (
+                <LazyMarker
+                  position={location}
+                  title={name}
+                  key={name}
+                  eventHandlers={{
+                    click: () =>
+                      router.push(`/stations/${lib.encodeStationName(name)}`),
+                  }}
+                />
+              ))}
+            </LazyMarkerCluster>
+          </LazyMap>
         </main>
-        <Nav />
       </div>
+      <Nav />
     </>
   )
 }
