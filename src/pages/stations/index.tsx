@@ -9,11 +9,11 @@ import stations from '../../stations'
 import { trpc } from '../../utils/trpc'
 
 export const getStaticProps: GetStaticProps<{
-  stations: { name: string; stops: number[] }[]
+  stations: string[]
 }> = async () => {
   return {
     props: {
-      stations: stations.getAll(),
+      stations: stations.getAll().map((station) => station.name),
     },
     revalidate: 86400,
   }
@@ -27,9 +27,9 @@ const SearchPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   const { data: favorites } = trpc.proxy.favorite.getAll.useQuery()
   const mappedStations = useMemo(
     () =>
-      stations.map((station) => ({
-        ...station,
-        isFavorite: favorites?.has(station.name),
+      stations.map((stationName) => ({
+        name: stationName,
+        isFavorite: favorites?.has(stationName),
       })),
     [stations, favorites]
   )

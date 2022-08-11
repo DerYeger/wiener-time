@@ -167,18 +167,6 @@ const StationPage: NextPage<
       ]),
     [monitors]
   )
-  const mapCenter = useMemo<[number, number]>(() => {
-    if (!markers || markers.length === 0) {
-      return lib.centerOfVienna
-    }
-    const [totalX, totalY] = markers.reduce<[number, number]>(
-      ([accX, accY], [markerX, markerY]) => {
-        return [accX + markerX, accY + markerY]
-      },
-      [0, 0]
-    )
-    return [totalX / markers.length, totalY / markers.length]
-  }, [markers])
 
   return (
     <>
@@ -208,7 +196,7 @@ const StationPage: NextPage<
             {monitors && monitors.length >= 1 && (
               <div className='w-full h-[200px] bg-[#F6EFE4]'>
                 <LazyMap
-                  center={mapCenter}
+                  center={station.location}
                   zoom={16}
                   zoomControl={false}
                   touchZoom={false}

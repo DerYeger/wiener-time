@@ -13,18 +13,18 @@ import { Icon } from '@iconify/react'
 import stations from '../stations'
 
 export const getStaticProps: GetStaticProps<{
-  stations: { name: string; stops: number[] }[]
+  stations: string[]
 }> = async () => {
   return {
     props: {
-      stations: stations.getAll(),
+      stations: stations.getAll().map((station) => station.name),
     },
     revalidate: 86400,
   }
 }
 
 export const Station: FC<{
-  station: { name: string; stops: number[]; isFavorite?: boolean }
+  station: { name: string; isFavorite?: boolean }
 }> = ({ station }) => {
   return (
     <div className='flex gap-2 items-center justify-between'>
@@ -42,7 +42,7 @@ export const Station: FC<{
 }
 
 export const Stations: FC<{
-  stations: { name: string; stops: number[]; isFavorite?: boolean }[]
+  stations: { name: string; isFavorite?: boolean }[]
 }> = ({ stations }) => {
   const ref = useRef(null)
   return (
@@ -83,9 +83,9 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   const favoriteStations = useMemo(
     () =>
       stations
-        ?.map((station) => ({
-          ...station,
-          isFavorite: favorites?.has(station.name),
+        ?.map((stationName) => ({
+          name: stationName,
+          isFavorite: favorites?.has(stationName),
         }))
         .filter(({ isFavorite }) => isFavorite),
     [stations, favorites]
