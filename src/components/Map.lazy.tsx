@@ -7,4 +7,11 @@ export const LazyMarker = dynamic(
   { ssr: false }
 )
 
+export const LazyMarkerCluster = dynamic(
+  async () => await import('./MarkerCluster'),
+  {
+    ssr: false,
+  }
+)
+
 export default LazyMap

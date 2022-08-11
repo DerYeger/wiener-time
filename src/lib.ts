@@ -66,7 +66,7 @@ const fetchAllStations = async () => {
     location: calculateCenter(
       stops
         .filter((stop) => stop.Latitude && stop.Longitude)
-        .map((stop) => [stop.Longitude!, stop.Latitude!])
+        .map((stop) => [stop.Latitude!, stop.Longitude!])
     ),
   }))
 }

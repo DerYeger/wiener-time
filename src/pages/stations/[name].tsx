@@ -217,7 +217,6 @@ const StationPage: NextPage<
             {monitors && monitors.length >= 1 && (
               <div className='w-full h-[200px]'>
                 <LazyMap
-                  markers={markers ?? []}
                   center={mapCenter}
                   zoom={16}
                   zoomControl={false}
@@ -228,7 +227,11 @@ const StationPage: NextPage<
                   dragging={false}
                 >
                   {markers?.map((marker, index) => (
-                    <LazyMarker position={marker} key={index} />
+                    <LazyMarker
+                      key={index}
+                      interactive={false}
+                      position={marker}
+                    />
                   ))}
                 </LazyMap>
               </div>

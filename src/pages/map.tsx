@@ -1,11 +1,10 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
-import { useState, useMemo } from 'react'
-import { useDebounce } from 'use-debounce'
-import { Stations } from './stations'
+import { useMemo } from 'react'
 import Header from '../components/Header'
 import Nav from '../components/Nav'
 import lib from '../lib'
-import LazyMap, { LazyMarker } from '../components/Map.lazy'
+import LazyMap, { LazyMarker, LazyMarkerCluster } from '../components/Map.lazy'
+import { useRouter } from 'next/router'
 
 export const getStaticProps: GetStaticProps<{
   stations: { name: string; stops: number[]; location?: [number, number] }[]
@@ -22,14 +21,14 @@ export const getStaticProps: GetStaticProps<{
 const MapPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   stations,
 }) => {
-  const markers = useMemo<[number, number][]>(
+  const router = useRouter()
+  const markers = useMemo<{ name: string; location: [number, number] }[]>(
     () =>
       stations
         ?.filter((station) => station.location)
-        .map(({ location }) => location!),
+        .map(({ name, location }) => ({ name, location: location! })),
     [stations]
   )
-  console.log(markers)
 
   return (
     <>
@@ -38,16 +37,25 @@ const MapPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         <main className='flex-1 flex-basis-full flex flex-col'>
           <div className='flex-1 w-full flex flex-col'>
             <LazyMap
-              markers={markers ?? []}
               center={lib.centerOfVienna}
-              zoom={12}
+              zoom={14}
               zoomControl={false}
               doubleClickZoom={false}
               markerZoomAnimation={false}
             >
-              {markers?.map((marker, index) => (
-                <LazyMarker position={marker} key={index} />
-              ))}
+              <LazyMarkerCluster>
+                {markers?.map(({ name, location }) => (
+                  <LazyMarker
+                    position={location}
+                    title={name}
+                    key={name}
+                    eventHandlers={{
+                      click: () =>
+                        router.push(`/stations/${lib.encodeStationName(name)}`),
+                    }}
+                  />
+                ))}
+              </LazyMarkerCluster>
             </LazyMap>
           </div>
         </main>

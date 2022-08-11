@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@changey/react-leaflet-markercluster": "4.0.0-rc1",
     "@next-auth/prisma-adapter": "^1.0.4",
     "@prisma/client": "^4.1.0",
     "@trpc/client": "10.0.0-alpha.41",
