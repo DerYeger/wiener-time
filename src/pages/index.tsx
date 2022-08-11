@@ -93,7 +93,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <div className='min-h-screen flex flex-col'>
+      <div className='min-h-[calc(100vh-50px)] flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col px-4 mt-4 items-center justify-between'>
           {!session.data && (
