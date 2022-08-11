@@ -13,6 +13,8 @@ L.Marker.prototype.options.icon = L.icon({
   shadowAnchor: [12, 41],
 })
 
+const boundsPadding = 0.01
+
 const Map: FC<
   {
     center: [number, number]
@@ -26,10 +28,9 @@ const Map: FC<
       minZoom={11}
       maxZoom={20}
       maxBounds={[
-        [48.117668, 16.18218],
-        [48.322571, 16.566511],
+        [48.117668 - boundsPadding, 16.18218 - boundsPadding],
+        [48.322571 + boundsPadding, 16.566511 + boundsPadding],
       ]}
-      boundsOptions={{}}
       {...rest}
     >
       <TileLayer
