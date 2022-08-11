@@ -7,7 +7,7 @@ const AboutPage: NextPage = () => {
   return (
     <>
       <NextSeo title='Impressum' />
-      <div className='min-h-screen flex flex-col'>
+      <div className='min-h-[calc(100vh-50px)] flex flex-col'>
         <Header />
         <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 gap-8 md:gap-16'>
           <section className='flex flex-col gap-4'>
