@@ -1,48 +1,50 @@
 import { Icon } from '@iconify/react'
-import { createSSGHelpers } from '@trpc/react/ssg'
-import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
+import {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+  NextPage,
+} from 'next'
 import { FC, useMemo } from 'react'
 import FavoriteToggle from '../../components/FavoriteToggle'
 import Spinner from '../../components/Spinner'
 import { Departure, Line, Monitor } from '../../model'
-import { appRouter } from '../../server/trpc/router'
 import { trpc } from '../../utils/trpc'
-import superjson from 'superjson'
-import { createContext } from '../../server/trpc/context'
 import lineClasses from '../../lineClasses.json'
 import lib from '../../lib'
 import { NextSeo } from 'next-seo'
 import LazyMap, { LazyMarker } from '../../components/Map.lazy'
 import stations, { Station } from '../../stations'
 
-export const getServerSideProps: GetServerSideProps<{
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: stations.getAll().map(({ name }) => ({
+      params: { name: lib.encodeStationName(name) },
+    })),
+    fallback: false,
+  }
+}
+
+export const getStaticProps: GetStaticProps<{
   station: Station
-}> = async ({ req, res, query }) => {
-  const stationName = lib.decodeStationName(query.name as string)
-  const ssg = createSSGHelpers({
-    router: appRouter,
-    ctx: await createContext({ req, res } as any),
-    transformer: superjson,
-  })
+}> = async ({ params }) => {
+  const stationName = lib.decodeStationName(params?.name as string)
 
   const station = stations.getByName(stationName)
   if (!station) {
     return {
-      notFound: true,
+      redirect: {
+        destination: '/stations',
+        permanent: false,
+      },
     }
   }
-  await ssg.prefetchQuery('monitor.getAllByStopIds', { stopIds: station.stops })
-
-  res.setHeader(
-    'Cache-Control',
-    'public, max-age=59, stale-while-revalidate=59'
-  )
 
   return {
     props: {
       station,
-      trpcState: ssg.dehydrate(),
     },
+    revalidate: 86400,
   }
 }
 
@@ -142,9 +144,9 @@ const MonitorComponent: FC<{ monitor: Monitor }> = ({ monitor }) => {
   )
 }
 
-const StationPage: NextPage<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ station }) => {
+const StationPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  station,
+}) => {
   const { data: monitors, error: monitorError } =
     trpc.proxy.monitor.getAllByStopIds.useQuery(
       { stopIds: station?.stops ?? [] },

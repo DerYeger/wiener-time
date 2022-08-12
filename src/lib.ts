@@ -6,7 +6,6 @@ import {
   StaticStopDataSchema,
 } from './model'
 
-
 const calculateCenter = (
   locations: [number, number][] | undefined
 ): [number, number] | undefined => {
@@ -38,8 +37,10 @@ const fetchMonitorData = async (stopIds: number[]) => {
   return monitorResponse.data.monitors
 }
 
-const encodeStationName = (name: string) => name.replaceAll('/', '-:-')
-const decodeStationName = (name: string) => name.replace('-:-', '/')
+const encodeStationName = (name: string) =>
+  name.replaceAll('/', '-:-').replaceAll('ß', '-ss-')
+const decodeStationName = (name: string) =>
+  name.replaceAll('-:-', '/').replaceAll('-ss-', 'ß')
 
 const centerOfVienna: [number, number] = [48.2082, 16.3738]
 

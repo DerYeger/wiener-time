@@ -91,7 +91,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <main className='flex-1 flex flex-col px-4 mt-4 items-center justify-between'>
+      <main className='flex-1 flex flex-col px-4 mt-4 items-center justify-center'>
         {!session.data && (
           <>
             <div className='h-[48px]' />
