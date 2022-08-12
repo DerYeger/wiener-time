@@ -7,7 +7,7 @@ const Header: FC = () => {
   const session = useSession()
 
   return (
-    <header className='py-2 px-4 bg-gray-100 border-b-gray-200 border-b-2 sticky top-0'>
+    <header className='py-2 px-4 bg-gray-100 border-b-gray-200 border-b-2 sticky top-0 z-40'>
       {session.data && (
         <div className='w-full flex items-center justify-between'>
           <Image
