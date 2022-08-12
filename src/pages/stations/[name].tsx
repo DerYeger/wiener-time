@@ -8,10 +8,8 @@ import { Departure, Line, Monitor } from '../../model'
 import { appRouter } from '../../server/trpc/router'
 import { trpc } from '../../utils/trpc'
 import superjson from 'superjson'
-import Header from '../../components/Header'
 import { createContext } from '../../server/trpc/context'
 import lineClasses from '../../lineClasses.json'
-import Nav from '../../components/Nav'
 import lib from '../../lib'
 import { NextSeo } from 'next-seo'
 import LazyMap, { LazyMarker } from '../../components/Map.lazy'
@@ -171,59 +169,55 @@ const StationPage: NextPage<
   return (
     <>
       <NextSeo title={station.name} />
-      <div className='min-h-[calc(100vh-50px)] flex flex-col'>
-        <Header />
-        <main className='flex-1 flex flex-col '>
-          <div className='flex items-center justify-between m-4'>
-            <h1 className='text-3xl sm:text-4xl md:text-5xl'>{station.name}</h1>
-            <FavoriteToggle
-              stationName={station.name}
-              isFavorite={station && isFavorite}
-            />
-          </div>
-          <div className='flex flex-1 flex-col items-center'>
-            {!monitors && !monitorError && <Spinner />}
-            {!monitors && monitorError && (
-              <div className='flex-1 flex items-center justify-center'>
-                {monitorError.message}
-              </div>
-            )}
-            {monitors?.length === 0 && (
-              <div className='flex-1 flex items-center justify-center'>
-                No data available :(
-              </div>
-            )}
-            {monitors && monitors.length >= 1 && (
-              <div className='w-full h-[200px] bg-[#F6EFE4]'>
-                <LazyMap
-                  center={station.location}
-                  zoom={16}
-                  zoomControl={false}
-                  touchZoom={false}
-                  scrollWheelZoom={false}
-                  doubleClickZoom={false}
-                  markerZoomAnimation={false}
-                  dragging={false}
-                >
-                  {markers?.map((marker, index) => (
-                    <LazyMarker
-                      key={index}
-                      interactive={false}
-                      position={marker}
-                    />
-                  ))}
-                </LazyMap>
-              </div>
-            )}
-            <div className='container my-2 px-2 flex flex-1 flex-wrap content-start justify-center'>
-              {monitors?.map((monitor, index) => (
-                <MonitorComponent key={index} monitor={monitor} />
-              ))}
+      <main className='flex-1 flex flex-col '>
+        <div className='flex items-center justify-between m-4'>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl'>{station.name}</h1>
+          <FavoriteToggle
+            stationName={station.name}
+            isFavorite={station && isFavorite}
+          />
+        </div>
+        <div className='flex flex-1 flex-col items-center'>
+          {!monitors && !monitorError && <Spinner />}
+          {!monitors && monitorError && (
+            <div className='flex-1 flex items-center justify-center'>
+              {monitorError.message}
             </div>
+          )}
+          {monitors?.length === 0 && (
+            <div className='flex-1 flex items-center justify-center'>
+              No data available :(
+            </div>
+          )}
+          {monitors && monitors.length >= 1 && (
+            <div className='w-full h-[200px] bg-[#F6EFE4]'>
+              <LazyMap
+                center={station.location}
+                zoom={16}
+                zoomControl={false}
+                touchZoom={false}
+                scrollWheelZoom={false}
+                doubleClickZoom={false}
+                markerZoomAnimation={false}
+                dragging={false}
+              >
+                {markers?.map((marker, index) => (
+                  <LazyMarker
+                    key={index}
+                    interactive={false}
+                    position={marker}
+                  />
+                ))}
+              </LazyMap>
+            </div>
+          )}
+          <div className='container my-2 px-2 flex flex-1 flex-wrap content-start justify-center'>
+            {monitors?.map((monitor, index) => (
+              <MonitorComponent key={index} monitor={monitor} />
+            ))}
           </div>
-        </main>
-      </div>
-      <Nav />
+        </div>
+      </main>
     </>
   )
 }

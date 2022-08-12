@@ -2,8 +2,6 @@ import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import { useState, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Stations } from '..'
-import Header from '../../components/Header'
-import Nav from '../../components/Nav'
 import Spinner from '../../components/Spinner'
 import stations from '../../stations'
 import { trpc } from '../../utils/trpc'
@@ -42,30 +40,24 @@ const SearchPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <div className='min-h-[calc(100vh-50px)] flex flex-col'>
-        <Header />
-        {!mappedStations && <Spinner />}
-        {mappedStations && (
-          <main className='flex-1 flex flex-col px-4 mt-4 items-center'>
-            <div className='w-full max-w-md'>
-              <div className='flex gap-4 justify-between items-center mb-4'>
-                <h1 className='text-3xl font-bold'>All</h1>
-                <input
-                  type='text'
-                  className='bg-gray-100 px-2 py-1 rounded border border-gray-300 min-w-0'
-                  value={searchQuery}
-                  placeholder='Search'
-                  onChange={(event) =>
-                    setSearchQuery(event.currentTarget.value)
-                  }
-                />
-              </div>
-              <Stations stations={filteredStations ?? []} />
+      {!mappedStations && <Spinner />}
+      {mappedStations && (
+        <main className='flex-1 flex flex-col px-4 mt-4 items-center'>
+          <div className='w-full max-w-md'>
+            <div className='flex gap-4 justify-between items-center mb-4'>
+              <h1 className='text-3xl font-bold'>All</h1>
+              <input
+                type='text'
+                className='bg-gray-100 px-2 py-1 rounded border border-gray-300 min-w-0'
+                value={searchQuery}
+                placeholder='Search'
+                onChange={(event) => setSearchQuery(event.currentTarget.value)}
+              />
             </div>
-          </main>
-        )}
-      </div>
-      <Nav />
+            <Stations stations={filteredStations ?? []} />
+          </div>
+        </main>
+      )}
     </>
   )
 }

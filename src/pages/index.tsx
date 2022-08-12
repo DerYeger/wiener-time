@@ -3,10 +3,8 @@ import { trpc } from '../utils/trpc'
 import { FC, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import FavoriteToggle from '../components/FavoriteToggle'
-import Header from '../components/Header'
 import { signIn, useSession } from 'next-auth/react'
 import ViewportList from 'react-viewport-list'
-import Nav from '../components/Nav'
 import Spinner from '../components/Spinner'
 import lib from '../lib'
 import { Icon } from '@iconify/react'
@@ -93,52 +91,48 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
-      <div className='min-h-[calc(100vh-50px)] flex flex-col'>
-        <Header />
-        <main className='flex-1 flex flex-col px-4 mt-4 items-center justify-between'>
-          {!session.data && (
-            <>
-              <div className='h-[48px]' />
-              <div className='text-neutral-500 flex flex-col gap-2 items-center'>
-                <div>
-                  <button
-                    className='text-blue-600 hover:text-blue-700 transition-colors'
-                    onClick={() => signIn()}
-                  >
-                    Sign in
-                  </button>
-                </div>
-                <span>or</span>
+      <main className='flex-1 flex flex-col px-4 mt-4 items-center justify-between'>
+        {!session.data && (
+          <>
+            <div className='h-[48px]' />
+            <div className='text-neutral-500 flex flex-col gap-2 items-center'>
+              <div>
+                <button
+                  className='text-blue-600 hover:text-blue-700 transition-colors'
+                  onClick={() => signIn()}
+                >
+                  Sign in
+                </button>
+              </div>
+              <span>or</span>
+              <SearchForYourStation />
+            </div>
+          </>
+        )}
+        {session.data && !favoriteStations && <Spinner />}
+        {session.data && favoriteStations && (
+          <div className='w-full max-w-md flex-1 flex flex-col'>
+            <h1 className='text-3xl font-bold mb-4'>Favorites</h1>
+            <Stations stations={favoriteStations} />
+            {favoriteStations.length === 0 && (
+              <div className='flex-1 flex items-center justify-center'>
                 <SearchForYourStation />
               </div>
-            </>
-          )}
-          {session.data && !favoriteStations && <Spinner />}
-          {session.data && favoriteStations && (
-            <div className='w-full max-w-md flex-1 flex flex-col'>
-              <h1 className='text-3xl font-bold mb-4'>Favorites</h1>
-              <Stations stations={favoriteStations} />
-              {favoriteStations.length === 0 && (
-                <div className='flex-1 flex items-center justify-center'>
-                  <SearchForYourStation />
-                </div>
-              )}
-            </div>
-          )}
-          <footer className='p-4 text-neutral-400 text-xs sticky bottom-0'>
-            <a
-              href='https://github.com/DerYeger/wiener-time'
-              target='_blank'
-              rel='noreferrer'
-              className='flex gap-1 items-center hover:text-neutral-600 transition-colors'
-            >
-              An open-source project
-              <Icon icon='ic:round-open-in-new' />
-            </a>
-          </footer>
-        </main>
-      </div>
-      <Nav />
+            )}
+          </div>
+        )}
+      </main>
+      <footer className='p-4 text-neutral-400 text-xs sticky bottom-0 flex justify-center'>
+        <a
+          href='https://github.com/DerYeger/wiener-time'
+          target='_blank'
+          rel='noreferrer'
+          className='flex gap-1 items-center hover:text-neutral-600 transition-colors'
+        >
+          An open-source project
+          <Icon icon='ic:round-open-in-new' />
+        </a>
+      </footer>
     </>
   )
 }
