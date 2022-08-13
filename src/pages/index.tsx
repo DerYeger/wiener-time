@@ -122,17 +122,6 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           </div>
         )}
       </main>
-      <footer className='p-4 text-neutral-400 text-xs sticky bottom-0 flex justify-center'>
-        <a
-          href='https://github.com/DerYeger/wiener-time'
-          target='_blank'
-          rel='noreferrer'
-          className='flex gap-1 items-center hover:text-neutral-600 transition-colors'
-        >
-          An open-source project
-          <Icon icon='ic:round-open-in-new' />
-        </a>
-      </footer>
     </>
   )
 }

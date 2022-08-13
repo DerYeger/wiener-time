@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import { NextPage } from 'next'
 import { NextSeo } from 'next-seo'
 
@@ -5,7 +6,18 @@ const AboutPage: NextPage = () => {
   return (
     <>
       <NextSeo title='Impressum' />
-      <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 mt-4 gap-8 md:gap-16'>
+      <aside className='p-4 text-neutral-400 text-xs sticky bottom-0 flex justify-center'>
+        <a
+          href='https://github.com/DerYeger/wiener-time'
+          target='_blank'
+          rel='noreferrer'
+          className='flex gap-1 items-center hover:text-neutral-600 transition-colors'
+        >
+          An open-source project
+          <Icon icon='ic:round-open-in-new' />
+        </a>
+      </aside>
+      <main className='flex-1 flex flex-col md:flex-row md:justify-center items-center md:items-start px-4 gap-8 md:gap-16'>
         <section className='flex flex-col gap-4'>
           <h2 className='text-3xl font-bold'>Impressum</h2>
           <div className='flex flex-col gap-2'>
